@@ -57,6 +57,7 @@ fun void keysound(float freq, Gain @ g, Event noteOff) {
         choir.opAM(0,0.4);
         choir.opAM(2,0.4);
         choir.opADSR(0, 0.1, 2, 0.6, 1);
+        Math.random2f(1.5,1.6) => choir.lfoSpeed;
         // choir.opADSR(1, 0.1, 2, 0.6, 0.1);
         // choir.opADSR(2, 0.1, 2, 0.6, 0.1);
 
@@ -95,7 +96,7 @@ fun void startInstrument() {
     Hid hi;
     HidMsg msg;
 
-    1 => int deviceNum;
+    2 => int deviceNum;
     hi.openKeyboard( deviceNum ) => int deviceAvailable;
     if ( deviceAvailable == 0 ) me.exit();
     <<< "keyboard '", hi.name(), "' ready" >>>;
