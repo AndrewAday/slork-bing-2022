@@ -55,6 +55,19 @@ public class Util {
         ];
     }
 
+    // MIDI notes
+    60 => static int C;
+    61 => static int Cs => static int Db;
+    62 => static int D;
+    63 => static int Ds => static int Eb;
+    64 => static int E;
+    65 => static int F;
+    66 => static int Fs => static int Gb;
+    67 => static int G;
+    68 => static int Gs => static int Ab;
+    69 => static int A;
+    70 => static int As => static int Bb;
+    71 => static int B;
 
     /* ============ Vector Math ============ */
 
