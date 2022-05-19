@@ -52,7 +52,7 @@ fun void keysound(float freq, Gain @ g, Event noteOff) {
 
     FM @ org;
 
-    if (freq > 260.0) {
+    if (freq > 260.0 * 4.9/8.) {
         KrstlChr choir => env;
         choir.opAM(0,0.4);
         choir.opAM(2,0.4);
@@ -125,6 +125,8 @@ fun void startInstrument() {
                 <<< "down:", msg.which >>>;
                     
                 keyToPitch_table[ msg.which ] => Std.mtof => float freq;			
+                // need to scale by major 3rd for some reason?
+                4.9/8. *=> freq;
                 spork ~ keysound(freq, g, noteOffs[msg.which] );
             }
             
