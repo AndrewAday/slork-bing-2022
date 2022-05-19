@@ -62,6 +62,11 @@ public class Util {
         return Std.fabs(a - b) < .00001;
     }
 
+    fun static int approxWithin(float a, float b, float c) {  // diff < c
+        return Std.fabs(a - b) < c;
+    }
+
+
     /* ============ Interpolators ============ */
     fun static float lerp(float a, float b, float t) {
         return a + t * (b - a);
