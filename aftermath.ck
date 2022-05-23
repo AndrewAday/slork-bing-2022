@@ -13,7 +13,7 @@ gt.init(0);
 2 => int NUM_CHANNELS;
 // 6 => int NUM_CHANNELS;
 Gain main_gain;
-Util.patch_to_dac(NUM_CHANNELS, main_gain);
+Util.patchToDAC(NUM_CHANNELS, main_gain);
 
 
 Gain l_field_gain; Gain l_voice_gain;
@@ -204,7 +204,7 @@ fun void field_voice_crossfader(
 
       // lerp voice grain length
       Util.remap(0, Z_VOICE_MAX, 10, 500, gt.curAxis[z])::ms => voice.GRAIN_LENGTH;
-
+ 
       if (gt.curAxis[z] >= Z_VOICE_MAX) {
         // TODO: add slight tremolo, vibrato?
 

@@ -96,7 +96,7 @@ fun void startInstrument() {
     Hid hi;
     HidMsg msg;
 
-    2 => int deviceNum;
+    0 => int deviceNum;
     hi.openKeyboard( deviceNum ) => int deviceAvailable;
     if ( deviceAvailable == 0 ) me.exit();
     <<< "keyboard '", hi.name(), "' ready" >>>;
