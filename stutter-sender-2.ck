@@ -85,15 +85,15 @@ while( true )
     xmit.start( "/foo/playmovie" );
     
     // add player ID
-    0 => xmit.add;
+    1 => xmit.add;
     
     // add playhead percentage (float)
-    // 0.3 => xmit.add;
-    gtToPlayhead() => xmit.add;
+    0.3 => xmit.add;
+    // gtToPlayhead() => xmit.add;
 
     // add rate (float)
-    //0.5 => xmit.add;
-    gtToRate() => xmit.add;
+    0.5 => xmit.add;
+    // gtToRate() => xmit.add;
 
     // <<< "LH: ", gt.curAxis[0],gt.curAxis[1],gt.curAxis[2],\
     // "      RH: ", gt.curAxis[3],gt.curAxis[4],gt.curAxis[5] >>>;
