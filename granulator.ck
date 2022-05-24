@@ -6,6 +6,7 @@ public class Granulator {
   500::ms => dur GRAIN_LENGTH;
   // how much overlap when firing
   8 => float GRAIN_OVERLAP;
+  // 1 => float GRAIN_OVERLAP;
   // factor relating grain duration to ramp up/down time
   .5 => float GRAIN_RAMP_FACTOR;
   // playback rate
@@ -25,8 +26,8 @@ public class Granulator {
   // grain position randomization
   .001 => float GRAIN_POSITION_RANDOM;
   // grain jitter (0 == periodic fire rate)
-  1 => float GRAIN_FIRE_RANDOM;
-  /* 0 => float GRAIN_FIRE_RANDOM; */
+  // 1 => float GRAIN_FIRE_RANDOM;
+  0 => float GRAIN_FIRE_RANDOM;
 
   // max lisa voices
   30 => int LISA_MAX_VOICES;
@@ -39,7 +40,11 @@ public class Granulator {
   LiSa @ lisa;
   PoleZero @ blocker;
   NRev @ reverb;
-  ADSR @ adsr;
+  ADSR @ adsr;  
+  
+  // for cycle pos
+  TriOsc lfo => blackhole;
+  .8 => float scrub_percentage;
 
 
   fun void init(string filepath, string type) {
@@ -115,12 +120,11 @@ public class Granulator {
   }
 
   fun void cycle_pos() {  // cycles pos back and forth across sample
-    // TODO: if using this, switch to more accurate cycle method found in migm/granulator.
-    2 * this.lisa.duration()/second => float T;
+    2 * scrub_percentage * this.lisa.duration() => lfo.period;  
+    // TODO: lfo should be a triangle wave
     while (true) {
-      1 - (.5 + .4 * Math.cos(2*pi*(now/second)/T)) => this.GRAIN_POSITION;
+      (.5 + (this.scrub_percentage/2.0) * this.lfo.last()) => this.GRAIN_POSITION;
       20::ms => now;
-      // <<< this.GRAIN_POSITION >>>;
     }
   }
 
@@ -238,11 +242,52 @@ public class Granulator {
     return lisa;
   }
 
+  // reload different sample into lisa
+    // repeated code, i know :(
+  fun void reload(string filepath) {
+    // if (filepath == "lamonte.wav") {
+    //   16/15. => RATE_MOD;  // shift up a halfstep
+    // }
+    // if (filepath == "tuvan.wav") {
+    //   9/8. => RATE_MOD;  // shift up a wholestep
+    // }
+
+    filepath => this.sample;
+
+    SndBuf buffy;
+    filepath => buffy.read;
+
+    // clear lisa buffer
+    this.lisa.clear();
+   
+    // set duration
+    buffy.samples()::samp => lisa.duration;
+    // transfer values from SndBuf to LiSa
+    for( 0 => int i; i < buffy.samples(); i++ )
+    {
+        // args are sample value and sample index
+        // (dur must be integral in samples)
+        lisa.valueAt( buffy.valueAt(i  * buffy.channels()), i::samp );
+        // if (i % 10 == 0) {1::samp => now;}  // BUG FIX: stop the clicking, give time to dump buffer
+        // if (i % 1000 == 0) {1::samp => now;}  // try to load twice as fast
+    }
+
+    // reset the cycle lfo period
+    set_cycle_lfo_period();
+  }
+
+  fun void set_cycle_lfo_period() {
+    // 2 * number of seconds in scrub region
+    2 * scrub_percentage * this.lisa.duration() => lfo.period;  
+  }
+
   // print
   fun void print() {
     // values
     <<< "pos:", GRAIN_POSITION, "random:", GRAIN_POSITION_RANDOM,
-        "rate:", GRAIN_PLAY_RATE, "size:", GRAIN_LENGTH/second >>>;
+        "rate:", GRAIN_PLAY_RATE, "size:", GRAIN_LENGTH/second,
+        "overlap: ", GRAIN_OVERLAP
+    >>>;
     // advance time
     100::ms => now;
   }

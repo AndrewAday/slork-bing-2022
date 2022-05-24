@@ -96,15 +96,19 @@ fun void startInstrument() {
     Hid hi;
     HidMsg msg;
 
-    2 => int deviceNum;
+    0 => int deviceNum;
     hi.openKeyboard( deviceNum ) => int deviceAvailable;
     if ( deviceAvailable == 0 ) me.exit();
     <<< "keyboard '", hi.name(), "' ready" >>>;
 
     /* signal flow */
-    Gain g => JCRev r => Echo e => Echo e2 => dac;
+    6 => int NUM_CHANNELS;
+    Gain g => JCRev r => Echo e => Echo e2 => Gain mainGain;
     .5 => g.gain;
-    r => dac;
+    r => mainGain;
+    Util.patchToDAC(NUM_CHANNELS, mainGain);
+
+
 
     // set delays
     500::ms => e.max => e.delay;

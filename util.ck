@@ -188,6 +188,28 @@ public class Util {
         return arr;
     }
 
+    // returns a + b
+    fun static int[] concat(int a[], int b[]) {
+        a @=> int ret[];
+        for (0 => int i; i < b.size(); i++) {
+            ret << b[i];
+        }
+        return ret;
+    }
+
+    fun static void print(int a[]) {
+        "" => string ret;
+        for (0 => int i; i < a.size(); i++) {
+            (a[i] + " ") +=> ret;
+        }
+        Util.print(ret);
+    }
+
+    fun static void print(int a[][]) {
+        for (0 => int i; i < a.size(); i++)
+            Util.print(a[i]);
+    }
+
     /* ========== Midi Helper Functions ========== */
 
     fun static void connectMidiPort(MidiOut @ mout, int midi_port) {
@@ -239,6 +261,38 @@ public class Util {
         }
         return arr;
     }
+
+    /* =========== Keycodes =========== */
+    2 => static int KEY_DELETE;
+    44 => static int KEY_SPACE; 
+    45 => static int KEY_DASH;
+    46 => static int KEY_EQUAL;
+    54 => static int KEY_COMMA;
+    55 => static int KEY_PERIOD;
+    79 => static int KEY_RIGHT;
+    80 => static int KEY_LEFT;
+    81 => static int KEY_DOWN;
+    82 => static int KEY_UP;
+    47 => static int KEY_LB;
+    48 => static int KEY_RB;
+    56 => static int KEY_SLASH;
+    225 => static int KEY_LEFT_SHIFT;
+    29 => static int KEY_Z;
+    22 => static int KEY_S;
+    27 => static int KEY_X;
+    7 => static int KEY_D;
+    6 => static int KEY_C;
+    9 => static int KEY_F;
+    25 => static int KEY_V;
+    10 => static int KEY_G;
+    5 => static int KEY_B;
+    11 => static int KEY_H;
+    24 => static int KEY_U;
+    16 => static int KEY_M;
+    51 => static int KEY_COLON;
+    52 => static int KEY_APPOSTROPHE;
+    40 => static int KEY_ENTER;
+
 }   
 
 Util util;

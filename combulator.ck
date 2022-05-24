@@ -230,7 +230,6 @@ fun void field_voice_crossfader(
     // Util.print("play rate: " + granulator.GRAIN_PLAY_RATE + " |  grain length: " + granulator.GRAIN_LENGTH / 1::ms);
 
 
-    // lerp gain between field recording and voice
     // z axis silent deadzone
     if (gt.curAxis[z] < Z_DEADZONE_CUTOFF) {
       0 => comb_gain.gain;
@@ -240,27 +239,20 @@ fun void field_voice_crossfader(
       // map field gain from  [cutoff, begin_comb] --> [0, 1]
       Util.remap01(Z_DEADZONE_CUTOFF, Z_BEGIN_COMB, 0, 1, gt.curAxis[z]) => field_gain.gain;
 
-      // hold field sample at gain = 1, voice at gain = 0
       if (in_comb_region) {
-        // exiting voice region
         false => in_comb_region;
-        // <<< "reassigning" , z >>>;
-        // assign_voice_freqs(z, voice);
       }
     } else { // comb region
-      // at z = 0, r_field_gain = 1, r_comb_gain = 0
-      // at z = .5, r_field_gain = 0, r_comb_gain = 1
       true => in_comb_region;
-      Util.remap01(Z_BEGIN_COMB, Z_COMB_MAX, 1, 0, gt.curAxis[z]) => float gain_level;
+      Util.remap01(Z_BEGIN_COMB, Z_COMB_MAX, 0, 1, gt.curAxis[z]) => float z_percentage;
       // (gain_level * .5) + .5 => field_gain.gain;  // remap to [1, .5]
-      (1 - gain_level) => comb_gain.gain;
+        // TODO: should we scale down field gain here?
+      z_percentage => comb_gain.gain;
 
       // Util.print("comb gain: " + comb_gain.gain());
       // Util.print("field gain: " + field_gain.gain());
 
       // set comb filter feedback
-      Util.remap01(Z_BEGIN_COMB, Z_COMB_MAX, 0, 1, gt.curAxis[z]) => float z_percentage;
-
         // TODO: map through logistic function, because feedback >.9 is much more sensitive
       Util.lerp(0, MAX_FEEDBACK, z_percentage) => float feedback;
       feedback => ksChord.feedback;
@@ -271,7 +263,7 @@ fun void field_voice_crossfader(
       // Util.remap(0, Z_COMB_MAX, 10, 500, gt.curAxis[z])::ms => voice.GRAIN_LENGTH;
 
       if (gt.curAxis[z] >= Z_COMB_MAX) {
-        // TODO: add slight tremolo, vibrato?
+        // TODO: add instrumental drone source? E.g. voice or electronic drone
 
         // chorus tremolo
           // update: sounds awful lol
@@ -281,13 +273,12 @@ fun void field_voice_crossfader(
       }
     }
     
-    // lerp voice grain length from 10::ms --> 500::ms
-    
     // gt.print();
     10::ms => now;
   }
 }
 
+/* currently unused */
 fun void combFilterController(int z, KSChord @ ksChord) {
   .5 => float COMB_FEEDBACK_MAX_Z; // z position at max feedback
   .98 => float MAX_FEEDBACK;
@@ -334,7 +325,7 @@ fun void combFilterPitcher(KSChord @ ksChord, ADSR @ comb_adsr, int chords[][]) 
 }
 
 // scales adsr gain according to hand width
-// pulses more at greater width
+// pulses more loudly at greater width
 fun void combFilterHandWidth(ADSR @ comb_adsr) {
   170 => float MAX_WIDTH;
   while (true) {
