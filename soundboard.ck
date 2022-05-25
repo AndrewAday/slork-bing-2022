@@ -340,7 +340,7 @@ sb.registerSample(5, me.dir() + "/Samples/Field/", "crickets.wav", Sampler.TYPE_
 sb.registerSample(17, me.dir() + "/Samples/Field/", "bumblebees.wav", Sampler.TYPE_CONTS);
 
 // start soundboard
-sb.startSoundBoard(1, 3);
+sb.startSoundBoard(0, 3);
 sb.patch(dac);
 
 while (true) {

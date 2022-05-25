@@ -13,7 +13,7 @@ gt.init(0);
 2 => int NUM_CHANNELS;
 // 6 => int NUM_CHANNELS;
 Gain main_gain;
-Util.patch_to_dac(NUM_CHANNELS, main_gain);
+Util.patchToDAC(NUM_CHANNELS, main_gain);
 
 
 Gain l_field_gain; Gain l_voice_gain;
