@@ -294,6 +294,7 @@ public class Util {
     11 => static int KEY_H;
     24 => static int KEY_U;
     16 => static int KEY_M;
+    4 => static int KEY_A;
     51 => static int KEY_COLON;
     52 => static int KEY_APPOSTROPHE;
     40 => static int KEY_ENTER;

@@ -36,7 +36,11 @@ Gain main_gain;
 Util.patchToDAC(NUM_CHANNELS, main_gain);
 
 
+
 Gain l_field_gain; Gain l_comb_gain;
+
+// envelope follower
+l_comb_gain => EnvFollower envFollower => blackhole;
 
 Chorus l_chorus;
 
@@ -76,19 +80,20 @@ l_ksChord.init(2);
 0. => l_ksChord.feedback; // no feedback
 
 /* ========= Instrumental setup (TODO: move to server initialization) ========= */
-create_granulator("./Samples/Drones/male-choir.wav", l_comb_gain) @=> Granulator instrument_gran0;
-create_granulator("./Samples/Drones/male-choir.wav", l_comb_gain) @=> Granulator instrument_gran1;
+create_granulator("./Samples/Drones/male-choir.wav", l_comb_adsr) @=> Granulator instrument_gran0;
+create_granulator("./Samples/Drones/male-choir.wav", l_comb_adsr) @=> Granulator instrument_gran1;
 spork ~ instrument_gran0.cycle_pos();
 spork ~ instrument_gran1.cycle_pos();
 // TODO: normalize gains on samples
 // TODO: crossfade between held drone and pulsed kschord
     // or sustain kschord and pulse instrument? discuss w/ tesss.
-2 => instrument_gran0.lisa.gain => instrument_gran1.lisa.gain;
+4 => instrument_gran0.lisa.gain => instrument_gran1.lisa.gain;
 
 /* ========= Get initialization params from server ========= */
 
 -1 => int playerID;
 -1 => int audioID;
+-1 => int movieID;
 Granulator @ l_granulator;
 fun void initialize() {
     OscIn oin;
@@ -98,17 +103,19 @@ fun void initialize() {
     /*
         playerID: int
         audioID: int
+        movieID: int
     */
-    oin.addAddress( "/jakarta/p2/initialize, i i" );
+    oin.addAddress( "/jakarta/p2/initialize, i i i" );
 
     // get init info from server
     oin => now;
     while (oin.recv(msg)) {
         msg.getInt(0) => playerID;
         msg.getInt(1) => audioID;
+        msg.getInt(2) => movieID;
     }
     // 0 => playerID; 0 => audioID;
-    Util.print("Player initialized. playerID: " + playerID + " | audioID: " + audioID);
+    Util.print("Player initialized. playerID: " + playerID + " | audioID: " + audioID + " | movieID: " + movieID);
 
     // initialize left joystick
     create_granulator(paths.AUDIO_FILES[audioID], l_ksChord) @=> l_granulator;
@@ -272,7 +279,7 @@ fun void granulatorPositioner(
     }
 }
 
-// handler for syncing audio file
+// handler for syncing audio file and movie file idx
 fun void audioFileHandler(
     Granulator @ granulator
 ) {
@@ -280,12 +287,13 @@ fun void audioFileHandler(
     OscMsg msg;
     6449 => oin.port;
 
-    oin.addAddress( "/jakarta/p2/audio_file_idx, i" );
+    oin.addAddress( "/jakarta/p2/audio_file_idx, i, i" );
 
     while (true) {
         oin => now;
         while (oin.recv(msg)) {
             msg.getInt(0) => int newAudioIdx;
+            msg.getInt(1) => movieID;
             if (newAudioIdx == audioID) continue;  // nothing to do
 
             // else: reload lisa
@@ -329,7 +337,7 @@ fun void combFilterPulser(ADSR @ comb_adsr, dur decay) {
 // send processing granulation info
 /*
 playerID: int
-audioID: int
+movieID: int
 grainPos: float
 grainRate: float
 grainSize: float (in ms)
@@ -337,10 +345,12 @@ gain: float
 */
 fun void processingSender(
     Granulator @ granulator,
-    Gain @ field_gain
+    EnvFollower @ follower,
+    Gain @ field_gain,
+    ADSR @ comb_adsr
 ) {
     "Tess" => string hostname; 
-    6449 => int port;
+    6450 => int port;
 
     OscOut xmit;
     xmit.dest( hostname, port );
@@ -348,11 +358,17 @@ fun void processingSender(
     while (true) {
         xmit.start("/jakarta/p2/player_to_processing");
         xmit.add(playerID); // playerID
-        xmit.add(audioID); // audioID
+        xmit.add(movieID);
         xmit.add(granulator.GRAIN_POSITION); // between [0,1]
         xmit.add(granulator.GRAIN_PLAY_RATE);
         xmit.add(granulator.GRAIN_LENGTH / ms); // (in ms)
-        xmit.add(field_gain.gain()); // (in ms)
+
+        field_gain.gain() * .25 + comb_adsr.gain() * .75 => float gain;
+        Math.max(0, gain - .1) => gain;
+        xmit.add(
+            // 5 * follower.value() + (field_gain.gain() / 1.8)
+            gain
+        ); // (in ms)
         xmit.send();
         10::ms => now;
     }
@@ -378,7 +394,7 @@ Util.bpmToQtNote(PULSE_BPM) => dur pulse_dur;
 spork ~ combFilterPulser(l_comb_adsr, pulse_dur); // comb filter adsr pulse
 
 // processing sender
-spork ~ processingSender(l_granulator, l_field_gain);
+spork ~ processingSender(l_granulator, envFollower, l_field_gain, l_comb_adsr);
 
 while (true) {
   1::second => now;

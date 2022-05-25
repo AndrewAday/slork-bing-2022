@@ -4,7 +4,8 @@ TODO: change cycle_pos LFO to triangle wave
 
 /*==========Network Setup=========*/
 [
-    "localhost"
+    "localhost",
+    "Tess"
 ] @=> string hostnames[];
 
 6449 => int port;
@@ -77,6 +78,7 @@ Util.print(CHORDS);
 /*==========Globals=========*/
 Paths paths;
 
+0 => int MOVIE_IDX;  // global movie file
 0 => int AUDIO_IDX; // global audio file (used when global grain pos is enabled)
 0 => int CHORD_IDX;  // position in chord sequence
 TriOsc lfo => blackhole;
@@ -122,6 +124,17 @@ fun void changeChordIdx(int idx) {
     Util.print("new chord idx: " + CHORD_IDX);
 }
 
+fun void changeMovieFile(int idx) {
+    if (idx == MOVIE_IDX) return;
+    while (idx < 0) {
+        idx + paths.MOVIE_FILES.size() => idx;
+    }
+    idx % paths.MOVIE_FILES.size() => idx;
+    idx => MOVIE_IDX;
+
+    Util.print("new movie idx: " + MOVIE_IDX + " | file: " + paths.MOVIE_FILES[MOVIE_IDX]);
+}
+
 /*==========OSC Senders=========*/
 
 /*
@@ -134,6 +147,7 @@ fun void initialize() {
             xmits[i].start("/jakarta/p2/initialize");
             xmits[i].add(i); // playerID
             xmits[i].add(i % paths.AUDIO_FILES.size());
+            xmits[i].add(i % paths.MOVIE_FILES.size());
             xmits[i].send();
         }
         1::second => now;  // continually send, but receiver only needs to receive once.
@@ -184,6 +198,7 @@ fun void grainPositionSender() {
 
 /*
 audioIdx: idx of global audio file
+movieIdx: idx of global movie file
 */
 false => int SYNC_AUDIO_FILES_ENABLED;
 fun void audioFileSender() {
@@ -194,6 +209,7 @@ fun void audioFileSender() {
         for (0 => int i; i < NUM_RECEIVERS; i++) {
             xmits[i].start("/jakarta/p2/audio_file_idx");
             xmits[i].add(AUDIO_IDX);
+            xmits[i].add(MOVIE_IDX);
             xmits[i].send();
         } 
     }
@@ -249,7 +265,7 @@ fun void kb() {
         hi => now;
 
         while (hi.recv(msg)) {
-            // <<< msg.which >>>;
+            <<< msg.which >>>;
             if (!msg.isButtonDown()) continue;
 
             if (msg.which == Util.KEY_SPACE) {
@@ -259,6 +275,12 @@ fun void kb() {
                 changeChordIdx(CHORD_IDX - 1);
             } else if (msg.which == Util.KEY_RIGHT) {
                 changeAudioFile(AUDIO_IDX + 1);
+                changeChordIdx(CHORD_IDX + 1);
+            } else if (msg.which == Util.KEY_A) {
+                changeMovieFile(MOVIE_IDX - 1);
+                changeChordIdx(CHORD_IDX - 1);
+            } else if (msg.which == Util.KEY_D) {
+                changeMovieFile(MOVIE_IDX + 1);
                 changeChordIdx(CHORD_IDX + 1);
             }
             //TODO: add controls to randomize audio/video/chord?

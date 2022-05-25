@@ -102,7 +102,7 @@ fun void startInstrument() {
     <<< "keyboard '", hi.name(), "' ready" >>>;
 
     /* signal flow */
-    6 => int NUM_CHANNELS;
+    2 => int NUM_CHANNELS;
     Gain g => JCRev r => Echo e => Echo e2 => Gain mainGain;
     .5 => g.gain;
     r => mainGain;
