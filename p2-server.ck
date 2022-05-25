@@ -4,8 +4,8 @@ TODO: change cycle_pos LFO to triangle wave
 
 /*==========Network Setup=========*/
 [
-    "localhost",
-    "Tess"
+    "localhost"
+    // "Tess"
 ] @=> string hostnames[];
 
 6449 => int port;
@@ -52,16 +52,31 @@ if( !hi.openKeyboard( device ) ) me.exit();
 
 [
   [D, D, A + 12],
-  [E, E, A + 12],
+  [D, E, A + 12],
   [E, A + 12, A + 12],
-  [E, B + 12, B + 12],
-  [E, Fs, B + 12],
-  [Fs, Gs, Cs + 12],
-  [Fs, A + 12, Cs + 12],
-  [Fs, Gs, B + 12],
-  [Cs, Gs, B + 12],
+  [E, A + 12, B + 12],
+  [E, Fs, Gs],  // 5 
+  [E, Fs, Gs],  
+  [Fs, Gs, A + 12],
+  [Fs, Gs, A + 12],  // 8
+  [Cs, Fs, Gs],
   [Fs, Gs, A + 12],
   [E, Fs, A + 12]
+
+] @=> int middleChords[][];
+
+[
+    [D + 12, E + 12, A + 24, D + 24],
+    [D + 12, E + 12, A + 24, D + 24],
+    [E + 12, A + 24, A + 24, E + 24],
+    [E + 12, A + 24, B + 24, E + 24],
+    [B + 12, B + 12, E + 12, B + 24],  // 5
+    [B + 12, Cs + 12, E + 12, B + 24],  // 6
+    [Cs + 12, Fs + 12, A + 24, Cs + 24],  // 7
+    [B + 12, Cs + 12, Fs + 12, A + 24],  // 8
+    [A + 12, B + 12, E + 12, Gs + 24],  // 9
+    [Gs, A + 12, E + 12, A + 24],  // 10
+    [Fs, A + 12, E + 12, A + 24]  // 11
 
 ] @=> int upperChords[][];
 
@@ -69,7 +84,7 @@ int CHORDS[0][0];
 
 // construct entire chord
 for (0 => int i; i < lowerChords.size(); i++) {
-    CHORDS << Util.concat(lowerChords[i], upperChords[i]);
+    CHORDS << Util.concat(Util.concat(lowerChords[i], middleChords[i]), upperChords[i]);
 }
 
 Util.print(CHORDS);

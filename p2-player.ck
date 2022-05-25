@@ -21,6 +21,8 @@ This let's us use more gametraks = more hemis = more sound
 */
 
 Util.print("jakarta p2 player initializing...");
+"Tess" => string PROCESSING_HOSTNAME;
+6450 => int PROCESSING_PORT;
 
 // Filepaths
 Paths paths;
@@ -180,7 +182,7 @@ fun void granulatorController(
         
         get_grain_rate(gt.curAxis[x]) => granulator.GRAIN_PLAY_RATE;
         get_field_grain_size(gt.curAxis[y]) => granulator.GRAIN_LENGTH;
-        granulator.print();
+        // granulator.print();
 
         // z axis silent deadzone
         if (gt.curAxis[z] < Z_DEADZONE_CUTOFF) {
@@ -349,11 +351,9 @@ fun void processingSender(
     Gain @ field_gain,
     ADSR @ comb_adsr
 ) {
-    "Tess" => string hostname; 
-    6450 => int port;
 
     OscOut xmit;
-    xmit.dest( hostname, port );
+    xmit.dest( PROCESSING_HOSTNAME, PROCESSING_PORT );
 
     while (true) {
         xmit.start("/jakarta/p2/player_to_processing");
