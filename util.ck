@@ -12,6 +12,14 @@ public class Util {
         return 1::second / 1::samp;
     }
 
+    /* ============ Casting ================ */
+
+    int STRING_TO_INT[0];
+    0 => STRING_TO_INT["0"];
+    1 => STRING_TO_INT["1"];
+    2 => STRING_TO_INT["2"];
+    6 => STRING_TO_INT["6"];
+
     /* ============ Timing ================ */
 
     // this synchronizes to period

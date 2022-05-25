@@ -21,7 +21,7 @@ This let's us use more gametraks = more hemis = more sound
 */
 
 Util.print("jakarta p2 player initializing...");
-"Tess" => string PROCESSING_HOSTNAME;
+"Tess.local" => string PROCESSING_HOSTNAME;
 6450 => int PROCESSING_PORT;
 
 // Filepaths
@@ -31,8 +31,14 @@ Paths paths;
 GameTrack gt;
 gt.init(0);
 
+// get num channels
+// print out all arguments
+int NUM_CHANNELS;
+Util util;
+util.STRING_TO_INT[me.arg(0)] => NUM_CHANNELS;
+
 // signal flow
-2 => int NUM_CHANNELS;
+// 2 => int NUM_CHANNELS;
 // 6 => int NUM_CHANNELS;
 Gain main_gain;
 Util.patchToDAC(NUM_CHANNELS, main_gain);
