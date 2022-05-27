@@ -4,7 +4,19 @@ TODO: change cycle_pos LFO to triangle wave
 
 /*==========Network Setup=========*/
 [
-    "localhost"
+    "gelato.local",
+    "pho.local",
+    "spam.local",
+    "kimchi.local",
+    "lasagna.local",
+    "nachos.local",
+    "donut.local",
+    "meatloaf.local",
+    "chowder.local"
+    // "Peanutbutter.local",
+    // "udon.local",
+    // "quinoa.local",
+    // "vindaloo.local",
     // "Tess"
 ] @=> string hostnames[];
 
@@ -25,8 +37,8 @@ Hid hi;
 HidMsg msg;
 
 // which keyboard
-0 => int device;
-// 1 => int device;
+// 0 => int device;
+1 => int device;
 
 if( !hi.openKeyboard( device ) ) me.exit();
 <<< "keyboard '" + hi.name() + "' ready", "" >>>;
@@ -280,7 +292,7 @@ fun void kb() {
         hi => now;
 
         while (hi.recv(msg)) {
-            <<< msg.which >>>;
+            // <<< msg.which >>>;
             if (!msg.isButtonDown()) continue;
 
             if (msg.which == Util.KEY_SPACE) {
