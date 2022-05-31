@@ -2,12 +2,13 @@ class VideoLoader {
   private PApplet that;
   
   private final String[] p1Paths = {
-    "p1/clouds.mp4",
-    "p1/grandcanyon.mp4",
-    "p1/grass.mp4",
-    "p1/lava2.mp4",
-    "p1/mountain.mp4",
-    "p1/sunflower.mp4",
+    "p1/lake-shooting-stars.mp4",
+    "p1/night-thunderstorm.mp4",
+    "p1/northern-lights.mp4",
+    "p1/orange-clouds-timelapse.mp4",
+    "p1/rock-stars-timelapse.mp4",
+    "p1/joshuatree-landscape.mp4",
+    "p1/joshuatree-stars.mp4"
   };
   
   
