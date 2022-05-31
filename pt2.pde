@@ -87,7 +87,7 @@ void setup()
    */
   //remoteLocation = new NetAddress("azaday.local", 6450);
   // TODO: multicast this
-  remoteLocation = new NetAddress("localhost", 6451); // TODO: move to networt config constants
+  remoteLocation = new NetAddress("224.0.0.1", 6451); // TODO: move to networt config constants
   qs = new Quickshot(remoteLocation, oscP5, vl);
   screenTileW =  width / nTilesW;
   screenTileH = height / nTilesL;

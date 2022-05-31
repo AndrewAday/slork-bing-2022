@@ -135,14 +135,14 @@ class VideoLoader {
      m.loop();
      
      // on beijing night traffic video only this doesn't work???
-     //if (movieSpeed < 0 && m.time() < 1) {
-     // m.speed(1);
-     // movieSpeed = 1;
+     if (movieSpeed < 0 && m.time() < 1) {
+      m.speed(1);
+      movieSpeed = 1;
       
-     //} else if (m.duration() - m.time() < .5) {
-     // m.speed(-1.0);
-     // movieSpeed = -1;
-     //}
+     } else if (m.duration() - m.time() < .5) {
+      m.speed(-1.0);
+      movieSpeed = -1;
+     }
      
      return m;
    }
