@@ -30,7 +30,7 @@ Hid hi;
 HidMsg msg;
 
 // which keyboard
-0 => int kbNum;
+paths.KB_NUM => int kbNum;
 // 1 => int device;
 3 => int trackpadNum;
 
@@ -218,7 +218,7 @@ fun void processing_updater() {
 fun void processing_drumhit_listener() {
     OscIn oin;
     OscMsg msg;
-    6450 => oin.port;
+    paths.PROCESSING_TO_PLAYER_PORT => oin.port;
 
     oin.addAddress( "/quickshot/drumhit" );
 

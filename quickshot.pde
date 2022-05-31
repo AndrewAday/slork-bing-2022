@@ -5,9 +5,9 @@ class Quickshot {
    private int queueCounter;
    private VideoLoader vl;
    
-   // OSC things
+   // OSC thingsf
    OscP5 oscP5;
-   NetAddress remoteLocation;
+   NetAddress multiCastAddress;
    
    //public float delay;
    public int frameDelay;
@@ -41,7 +41,7 @@ class Quickshot {
      
      this.vl = vl;
      this.oscP5  = oscP5;
-     this.remoteLocation = remoteLocation;
+     this.multiCastAddress = remoteLocation;
      
    }
    
@@ -63,8 +63,8 @@ class Quickshot {
    
    public Movie queueVideo() {
      // osc stuff
-     OscMessage delayMessage = new OscMessage("/quickshot/drumhit");
-     oscP5.send(delayMessage, remoteLocation);
+     OscMessage quickShotMessage = new OscMessage("/quickshot/drumhit");
+     oscP5.send(quickShotMessage, this.multiCastAddress);
      return vl.stepMovie(MOVIEPHASE.QUICKSHOT);
    }
    

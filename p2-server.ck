@@ -22,7 +22,7 @@ Hid hi;
 HidMsg msg;
 
 // which keyboard
-0 => int device;
+paths.KB_NUM => int device;
 // 1 => int device;
 
 if( !hi.openKeyboard( device ) ) me.exit();
@@ -279,6 +279,7 @@ fun void toggleSynchronize() {
 
 
 fun void kb() {
+    toggleSynchronize();  // only allow sync for now
     while (true) {
         hi => now;
 
@@ -287,7 +288,7 @@ fun void kb() {
             if (!msg.isButtonDown()) continue;
 
             if (msg.which == Util.KEY_SPACE) {
-                toggleSynchronize();
+                // toggleSynchronize();
             } else if (msg.which == Util.KEY_LEFT) {
                 changeAudioFile(AUDIO_IDX - 1);
                 changeChordIdx(CHORD_IDX - 1);

@@ -43,7 +43,7 @@ class VideoLoader {
      "bad/behemoth-forge-1-2.mp4",
      "good/beijing-aerial-still.mp4",
      "bad/behemoth-forge-2.mp4",
-   };
+   }; // TODO add quickshot paths from quickshot.pde
    
    private final String[] endPaths = {
      "quickshot/waves.mp4",
@@ -58,19 +58,21 @@ class VideoLoader {
    private ArrayList<Movie> p2Movies = new ArrayList<Movie>();
    private ArrayList<Movie> quickshotMovies = new ArrayList<Movie>();
    private ArrayList<Movie> endMovies = new ArrayList<Movie>();
+   private ArrayList<ArrayList<Movie>> movies = new ArrayList<ArrayList<Movie>>();
    
-   private int p2Idx = 0;
-   private int quickshotIdx = 0;
-   private int endIdx = 0;
+   private int[] movieIdxs = {0, 0, 0, 0};
    
    private Movie m;
+   private float movieSpeed = 1;
    
    
    public VideoLoader(PApplet that) {
      this.that = that;
      loadVideos();
+
      this.switcher[0] = p1Movies.get(0);
      this.switcher[1] = p1Movies.get(1);
+
      this.m = p1Movies.get(0);
    }
    
@@ -87,56 +89,61 @@ class VideoLoader {
      for (int i = 0; i < endPaths.length; i++) {
        this.endMovies.add(new Movie(that, endPaths[i]));
      }
+     this.movies.add(p1Movies);
+     this.movies.add(p2Movies);
+     this.movies.add(quickshotMovies);
+     this.movies.add(endMovies);
+     println("movies loaded");
    }
    
    public Movie stepMovie(MOVIEPHASE which) {
      if (m != null) {
        m.stop();
      }
-     if (which == MOVIEPHASE.P2) {    
-       m = p2Movies.get(p2Idx % p2Movies.size());
-       p2Idx += 1;
-     } else if (which == MOVIEPHASE.QUICKSHOT) {
-       m = quickshotMovies.get(quickshotIdx % quickshotMovies.size());
-       quickshotIdx += 1;
-     } else if (which == MOVIEPHASE.END) {
-       m = endMovies.get(endIdx % endMovies.size());
-       endIdx += 1;
-     }
+     
+     int movieIdx = movieIdxs[which.ordinal()];
+     var movieList = movies.get(which.ordinal());
+     m = movieList.get(movieIdx % movieList.size());
+     movieIdxs[which.ordinal()] += 1;
+     
+     println("stepping new movie: " + m.filename);
+     
+     movieSpeed = 1;
      m.loop();
      return m;
    }
    
-   public Movie setMovie(MOVIEPHASE which, int idx) {
-     Movie newMovie = null;
-     if (which == MOVIEPHASE.P2) {   
-       if (p2Idx == idx) {
-         return m;
-       }
-       p2Idx = idx;
-       newMovie = p2Movies.get(p2Idx % p2Movies.size());
-     } else if (which == MOVIEPHASE.QUICKSHOT) {
-       if (quickshotIdx == idx) {
-         return m;
-       }
-       quickshotIdx = idx;
-       newMovie = quickshotMovies.get(quickshotIdx % quickshotMovies.size());
-     } else if (which == MOVIEPHASE.END) {
-       if (endIdx == idx) {
-         return m;
-       }
-       endIdx = idx;
-       newMovie = endMovies.get(endIdx % endMovies.size());
-     }
-     if (m != null) {
+   public Movie setMovie(MOVIEPHASE which, int movieIdx) {
+     if (movieIdxs[which.ordinal()] == movieIdx)
+       return m;  // already playing, do nothing
+      
+     if (m != null)
        m.stop();
-     }
-     m = newMovie;
+     
+     var movieList = movies.get(which.ordinal());
+     m = movieList.get(movieIdx % movieList.size());
+     movieIdxs[which.ordinal()] = movieIdx;
+     
+    println("setting new movie: " + m.filename);
+     
+     movieSpeed = 1;
      m.loop();
      return m;
    }
    
    public Movie getMovie() {
+     m.loop();
+     
+     // on beijing night traffic video only this doesn't work???
+     //if (movieSpeed < 0 && m.time() < 1) {
+     // m.speed(1);
+     // movieSpeed = 1;
+      
+     //} else if (m.duration() - m.time() < .5) {
+     // m.speed(-1.0);
+     // movieSpeed = -1;
+     //}
+     
      return m;
    }
    
@@ -158,6 +165,11 @@ class VideoLoader {
       }
     }
    }
+
+  public void initP1() {
+    this.switcher[0].loop();
+    this.switcher[1].loop();
+  }
    
    public void p1QueueLeft() {
     Movie curr = switcher[1];

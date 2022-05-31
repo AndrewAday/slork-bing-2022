@@ -1,9 +1,12 @@
 /*
-Used to hold global const paths
+Used to hold global constants
 */
 public class Paths {
+    /* ========HID config ============== */
+    0 => int KB_NUM;
+
     /* ========network config ============== */
-    "Tess.local" => string PROCESSING_HOSTNAME;
+    "localhost" => string PROCESSING_HOSTNAME;
     6450 => int PROCESSING_PORT;
     [
         "localhost"
@@ -23,7 +26,8 @@ public class Paths {
         // "Tess"
     ] @=> string CHUCK_HOSTNAMES[];
 
-    6449 => int CHUCK_PORT;
+    6449 => int CHUCK_PORT;  // chuck server to chuck players
+    6451 => int PROCESSING_TO_PLAYER_PORT; // players listen here for processing events
 
 
     [
