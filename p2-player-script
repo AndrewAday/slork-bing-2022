@@ -1,1 +1,1 @@
-chuck granulator.ck util.ck paths.ck gametrack.ck ks-chord.ck env-follower.ck p2-player.ck:2
+chuck granulator.ck util.ck paths.ck sampler.ck gametrack.ck ks-chord.ck env-follower.ck switchable.ck combulator.ck noiser.ck shephard.ck soundboard.ck  drone.ck p4-vert-droner.ck p2-player.ck:2
