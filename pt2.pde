@@ -31,14 +31,18 @@ int fadeStartTime = 0;
 int fadeDuration = 3000;
 
 
-enum TILEMODE {FULLSCREEN, TILED, CROPPED, QUICKSHOT, END};
+enum TILEMODE {FULLSCREEN, TILED, CROPPED, QUICKSHOT};
 TILEMODE tileMode = TILEMODE.FULLSCREEN;
+MOVIEPHASE phase = MOVIEPHASE.P1;
 
-public enum MOVIEPHASE { P2, QUICKSHOT, END };
+public enum MOVIEPHASE { P1, P2, QUICKSHOT, END };
 
 ArrayList<Player> players = new ArrayList<Player>();
 Quickshot qs;
 VideoLoader vl;
+
+// keep track of x-axis of gametrak for drone
+float droneX;
 
 void initPlayers() {
   for (int i = 0; i < nPlayers; i++) {
@@ -66,7 +70,6 @@ void setup()
   // volume (tho this doesn't seem to work unless repeated below)
   //myMovie.volume(0);
   vl = new VideoLoader(this);
-  vl.loadVideos();
   while(vl.numMovies() == 0) delay(2);
   initPlayers();
   
@@ -118,59 +121,82 @@ void draw()
     println("movie is null");
     return;
   }
-  if (tileMode == TILEMODE.FULLSCREEN) {
-    image(m, 0, 0, width, height);
+  if (phase == MOVIEPHASE.P1) {
+    // move to left
+    if (Util.approxWithin(droneX, 0, 0.1) && !vl.prevLeft) {
+      
+      vl.prevLeft = true;
+      vl.p1QueueRight();
+      println("moved left, next right " + vl.switcher[1].filename);
+    }
+    // move to right
+    if (Util.approxWithin(droneX, 1, 0.1) && vl.prevLeft) {
+      
+      vl.prevLeft = false;
+      vl.p1QueueLeft();
+      println("moved right, next left " + vl.switcher[0].filename);
+    }
+    tint(255, int(255*(1 - droneX)));
+    image(vl.switcher[0], 0, 0, width, height);
+    
+    tint(255, int(255*(droneX)));
+    image(vl.switcher[1], 0, 0, width, height);
     return;
-  }
-  else if (tileMode == TILEMODE.END) {
-    float fader = map( millis() - fadeStartTime, 0, fadeDuration, 0, 255);
-    fader = constrain(fader, 0, 255);
-    tint(255, fader);
-    image(m.get(0, 0, m.width, m.height - 100), 0, 0, width, height);
-    return;
-  }
-  else if (tileMode == TILEMODE.QUICKSHOT) {
-    float delay = qs.initialDelay * qs.delayRate;
-    if (delay < 0.1) {
-      background(255);
+  } else if (phase == MOVIEPHASE.P2) {
+    background(0);
+    
+    if (tileMode == TILEMODE.FULLSCREEN) {
+      println(m.filename);
+      image(m, 0, 0, width, height);
       return;
     }
-    //else if (delay <= 0.2) {
-    //  if (qs.getImg() == null || frameCount % qs.frameDelay == 0) {
-    //    qs.queueImg();
-    //  }
-      
-    //  image(qs.getImg(), 0, 0, width, height);
-    //  return;
-    //}
-    PImage mov = m.get();
-    image(mov, 0, 0, width, height);
-    //mov.filter(GRAY);
-    //toGrayscale(mov);
-    //tint(255, 200);
-    //image(mov, 0, 0, width, height);
-    if (delay > 0.1 && m.time() > delay) {
-      qs.queueVideo();
+    // get position of movie based on player ID
+    for (int i = 0; i < players.size(); i++) {
+      Player currPlayer = players.get(i % 1);
+      //tint(255, 255*currPlayer.gain);
+      int xPos = i / nTilesW;
+      int yPos = i % nTilesL;
+      final PImage img = m.get();
+      if (tileMode == TILEMODE.TILED) {
+        // tile entire img
+        image(img, screenTileW*xPos, screenTileH*yPos, screenTileW, screenTileH);
+      } else if (tileMode == TILEMODE.CROPPED) {
+        int imgTileW = img.width / nTilesW;
+        int imgTileH = img.height / nTilesL;
+        // tile cropped
+        image(img.get(imgTileW*xPos, imgTileH*yPos, imgTileW, imgTileH), screenTileW*xPos, screenTileH*yPos, screenTileW, screenTileH);
+      }
     }
-    return;
-  }
-  background(0);
-  // get position of movie based on player ID
-  for (int i = 0; i < players.size(); i++) {
-    Player currPlayer = players.get(i % 1);
-    //tint(255, 255*currPlayer.gain);
-    int xPos = i / nTilesW;
-    int yPos = i % nTilesL;
-    final PImage img = m.get();
-    if (tileMode == TILEMODE.TILED) {
-      // tile entire img
-      image(img, screenTileW*xPos, screenTileH*yPos, screenTileW, screenTileH);
-    } else if (tileMode == TILEMODE.CROPPED) {
-      int imgTileW = img.width / nTilesW;
-      int imgTileH = img.height / nTilesL;
-      // tile cropped
-      image(img.get(imgTileW*xPos, imgTileH*yPos, imgTileW, imgTileH), screenTileW*xPos, screenTileH*yPos, screenTileW, screenTileH);
-    }
+  } else if (phase == MOVIEPHASE.QUICKSHOT) {
+      float delay = qs.initialDelay * qs.delayRate;
+      if (delay < 0.1) {
+        background(255);
+        return;
+      }
+      //else if (delay <= 0.2) {
+      //  if (qs.getImg() == null || frameCount % qs.frameDelay == 0) {
+      //    qs.queueImg();
+      //  }
+        
+      //  image(qs.getImg(), 0, 0, width, height);
+      //  return;
+      //}
+      PImage mov = m.get();
+      image(mov, 0, 0, width, height);
+      //mov.filter(GRAY);
+      //toGrayscale(mov);
+      //tint(255, 200);
+      //image(mov, 0, 0, width, height);
+      if (delay > 0.1 && m.time() > delay) {
+        qs.queueVideo();
+      }
+      return;
+  } else if (phase == MOVIEPHASE.END) {
+      float fader = map( millis() - fadeStartTime, 0, fadeDuration, 0, 255);
+      fader = constrain(fader, 0, 255);
+      tint(255, fader);
+      image(m.get(0, 0, m.width, m.height - 100), 0, 0, width, height);
+      return;
   }
 }
 
@@ -181,43 +207,63 @@ void movieEvent(Movie m)
 
 
 // handles incoming OSC messages
-void oscEvent(OscMessage theOscMessage)
+void oscEvent(OscMessage msg)
 {
     /* check if the typetag is the right one. */
     // print("### received an osc message.");
-    int playerID = theOscMessage.get(0).intValue();
-    int audioID = theOscMessage.get(1).intValue();
-    float gain = theOscMessage.get(5).floatValue();
-    
-    //println("playerID: " + playerID + ", gain:" + gain + ", movie:" + audioID);
-    if (playerID == 0) {
-      vl.setMovie(MOVIEPHASE.P2, audioID);
+    if (msg.checkAddrPattern("/p2/player_to_processing")==true)
+    {
+      int playerID = msg.get(0).intValue();
+      int audioID = msg.get(1).intValue();
+      float gain = msg.get(5).floatValue();
+      
+      println("playerID: " + playerID + ", gain:" + gain + ", movie:" + audioID);
+      if (playerID == 0) {
+        vl.setMovie(MOVIEPHASE.P2, audioID);
+      }
+      Player currPlayer = players.get(playerID);
+      currPlayer.gain = min(gain * 3 , 1);
+      return;
+    } else if (msg.checkAddrPattern("/gametrak")==true)
+    {
+      droneX = msg.get(0).floatValue();
+      return;
     }
-    Player currPlayer = players.get(playerID);
-    currPlayer.gain = min(gain * 3 , 1);
-    return;
 }
 
 void keyPressed() {
-  if (key == '1') {
+  if (key != '1') {
+    vl.exitP1();
+  }
+  if (key == 'q') {
+    println("=========== TILED ============");
     tileMode = TILEMODE.TILED;
   }
-  else if (key == '2') {
+  else if (key == 'w') {
+    println("=========== CROPPED ============");
     tileMode = TILEMODE.CROPPED;
   }
-  else if (key == '3') {
+  else if (key == 'e') {
+    println("=========== FULLSCREEN ============");
     tileMode = TILEMODE.FULLSCREEN;
   }
-  else if (key == '4') {
-    tileMode = TILEMODE.QUICKSHOT;
+  else if (key == '1') {
+    phase = MOVIEPHASE.P1;
+  }
+  else if (key == '2') {
+    println("=========== ENTERING PART 2 ============");
+    phase = MOVIEPHASE.P2;
+  }
+  else if (key == '3') {
+    phase = MOVIEPHASE.QUICKSHOT;
     qs.queueVideo();
   }
-  else if (key == '5') {
+  else if (key == '4') {
     // trigger cross fade in last shot
     println("Fading to final");
     fadeStartTime = millis();
     vl.stepMovie(MOVIEPHASE.END);
-    tileMode = TILEMODE.END;
+    phase = MOVIEPHASE.END;
   }
   else if (keyCode == DOWN) {
     println("faster shot: " + qs.initialDelay * qs.delayRate);

@@ -1,6 +1,17 @@
 class VideoLoader {
   private PApplet that;
-  private final String[] moviePaths = {
+  
+  private final String[] p1Paths = {
+    "p1/clouds.mp4",
+    "p1/grandcanyon.mp4",
+    "p1/grass.mp4",
+    "p1/lava2.mp4",
+    "p1/mountain.mp4",
+    "p1/sunflower.mp4",
+  };
+  
+  
+  private final String[] p2Paths = {
       // good
      "good/clouds.mp4",
      "good/beijing-aerial-still.mp4",
@@ -39,6 +50,11 @@ class VideoLoader {
      "quickshot/window-rain.mp4"
    };
    
+   // p1 vars
+   public Movie switcher[] = new Movie[2];
+   public boolean prevLeft = false;
+   
+   private ArrayList<Movie> p1Movies = new ArrayList<Movie>();
    private ArrayList<Movie> p2Movies = new ArrayList<Movie>();
    private ArrayList<Movie> quickshotMovies = new ArrayList<Movie>();
    private ArrayList<Movie> endMovies = new ArrayList<Movie>();
@@ -52,12 +68,18 @@ class VideoLoader {
    
    public VideoLoader(PApplet that) {
      this.that = that;
-     this.m = null;
+     loadVideos();
+     this.switcher[0] = p1Movies.get(0);
+     this.switcher[1] = p1Movies.get(1);
+     this.m = p1Movies.get(0);
    }
    
-   public void loadVideos() {
-     for (int i = 0; i < moviePaths.length; i++) {
-       this.p2Movies.add(new Movie(that, moviePaths[i]));
+   private void loadVideos() {
+     for (int i = 0; i < p1Paths.length; i++) {
+       this.p1Movies.add(new Movie(that, p1Paths[i]));
+     }
+     for (int i = 0; i < p2Paths.length; i++) {
+       this.p2Movies.add(new Movie(that, p2Paths[i]));
      }
      for (int i = 0; i < quickshotPaths.length; i++) {
        this.quickshotMovies.add(new Movie(that, quickshotPaths[i]));
@@ -118,8 +140,42 @@ class VideoLoader {
      return m;
    }
    
-   
    public int numMovies() {
      return p2Movies.size();
+   }
+   
+   public void p1QueueRight() {
+    Movie curr = switcher[0];
+    while (true) {
+      int r = int(random(p1Movies.size()));
+      Movie next = p1Movies.get(r);
+      if (!curr.filename.equals(next.filename)) {
+        println("next: " + next.filename);
+        switcher[1].stop();
+        next.loop();
+        switcher[1] = next;
+        break;
+      }
+    }
+   }
+   
+   public void p1QueueLeft() {
+    Movie curr = switcher[1];
+    while (true) {
+      int r = int(random(p1Movies.size()));
+      Movie next = p1Movies.get(r);
+      if (!curr.filename.equals(next.filename)) {
+        println("next: " + next.filename);
+        switcher[0].stop();
+        next.loop();
+        switcher[0] = next;
+        break;
+      }
+    }
+   }
+   
+   public void exitP1() {
+     switcher[0].stop();
+     switcher[1].stop();
    }
 }
