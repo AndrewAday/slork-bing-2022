@@ -89,9 +89,10 @@ public class Droner extends Switchable {
   -1. => float X_BEGIN_VOICE;
   1. => float X_VOICE_MAX;
 
-  0 => int prev_side; // 0 left 1 right
+  [0, 0] @=> int prev_side[]; // 0 left 1 right
   fun void play(
     GameTrack @ gt,
+    int which,
     int x, int y, int z, 
     Granulator @ ll_voice,
     Granulator @ lr_voice, 
@@ -100,14 +101,14 @@ public class Droner extends Switchable {
     float pitchSet[] 
   ) {
     // moved to left
-    if (Util.approxWithin(gt.curAxis[x], -1, 0.05) && prev_side == 1) {
+    if (Util.approxWithin(gt.curAxis[x], -1, 0.1) && prev_side[which] == 1) {
       assign_voice_freqs(ll_voice, lr_voice, pitchSet);
-      0 => prev_side;
+      0 => prev_side[which];
     }
     // moved to right
-    if (Util.approxWithin(gt.curAxis[x], 1, 0.05) && prev_side == 0) {
+    if (Util.approxWithin(gt.curAxis[x], 1, 0.1) && prev_side[which] == 0) {
       assign_voice_freqs(lr_voice, ll_voice, pitchSet);
-      1 => prev_side;
+      1 => prev_side[which];
     }
 
     Util.clamp01(Util.remap(X_BEGIN_VOICE, X_VOICE_MAX, 0, 1, gt.curAxis[x])) => float temp;
@@ -154,8 +155,8 @@ public class Droner extends Switchable {
   }
 
   fun void gt_update(GameTrack @ gt) {
-    play(gt, gt.LX, gt.LY, gt.LZ, ll_voice, lr_voice, ll_voice_gain, lr_voice_gain, cMaj_hexachord_low);
-    play(gt, gt.RX, gt.RY, gt.RZ, rl_voice, rr_voice, rl_voice_gain, rr_voice_gain, cMaj_hexachord_low);
+    play(gt, 0, gt.LX, gt.LY, gt.LZ, ll_voice, lr_voice, ll_voice_gain, lr_voice_gain, cMaj_hexachord_low);
+    play(gt, 1, gt.RX, gt.RY, gt.RZ, rl_voice, rr_voice, rl_voice_gain, rr_voice_gain, cMaj_hexachord_low);
   }
 
   fun void processing_update(GameTrack @ gt) {
@@ -163,8 +164,12 @@ public class Droner extends Switchable {
     if (playerID != 0) return;
 
     xmit.start( "/gametrak" );
-    Util.remap01(-1, 1, 0, 1, gt.curAxis[gt.LX]) => xmit.add;
+    Util.remap01(-1, 1, 0, 1, gt.curAxis[gt.LX]) => float tmp;
+    // <<< tmp >>>;
+    tmp => xmit.add;
     xmit.send();
+
+    // <<< "what" >>>;
   }
 }
 
