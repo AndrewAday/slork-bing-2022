@@ -137,6 +137,10 @@ public class Granulator {
     }
   }
 
+  fun dur get_grain_overlap() {
+      return GRAIN_LENGTH / GRAIN_OVERLAP + Math.random2f(0,GRAIN_FIRE_RANDOM)::ms;
+  }
+
   fun void mute() {
     <<< "muting" >>>;
     1 => this.MUTED;

@@ -2,6 +2,30 @@
 Used to hold global const paths
 */
 public class Paths {
+    /* ========network config ============== */
+    "Tess.local" => string PROCESSING_HOSTNAME;
+    6450 => int PROCESSING_PORT;
+    [
+        "localhost"
+        // "gelato.local",
+        // "pho.local",
+        // "spam.local",
+        // "kimchi.local",
+        // "lasagna.local",
+        // "nachos.local",
+        // "donut.local",
+        // "meatloaf.local",
+        // "chowder.local"
+        // "Peanutbutter.local",
+        // "udon.local",
+        // "quinoa.local",
+        // "vindaloo.local",
+        // "Tess"
+    ] @=> string CHUCK_HOSTNAMES[];
+
+    6449 => int CHUCK_PORT;
+
+
     [
         "./Samples/Field/thunder.wav",
         "./Samples/Field/birds.wav",

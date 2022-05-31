@@ -2,25 +2,10 @@
 TODO: change cycle_pos LFO to triangle wave
 */
 
+Paths paths;
 /*==========Network Setup=========*/
-[
-    "gelato.local",
-    "pho.local",
-    "spam.local",
-    "kimchi.local",
-    "lasagna.local",
-    "nachos.local",
-    "donut.local",
-    "meatloaf.local",
-    "chowder.local"
-    // "Peanutbutter.local",
-    // "udon.local",
-    // "quinoa.local",
-    // "vindaloo.local",
-    // "Tess"
-] @=> string hostnames[];
-
-6449 => int port;
+paths.CHUCK_HOSTNAMES @=> string hostnames[];
+paths.CHUCK_PORT => int port;
 
 // sender object
 hostnames.size() => int NUM_RECEIVERS;
@@ -37,8 +22,8 @@ Hid hi;
 HidMsg msg;
 
 // which keyboard
-// 0 => int device;
-1 => int device;
+0 => int device;
+// 1 => int device;
 
 if( !hi.openKeyboard( device ) ) me.exit();
 <<< "keyboard '" + hi.name() + "' ready", "" >>>;
@@ -48,62 +33,67 @@ if( !hi.openKeyboard( device ) ) me.exit();
 // A major scale
 57 => int A; 59 => int B; 61 => int Cs; 62 => int D; 64 => int E; 66 => int Fs; 68 => int Gs;
 
-[
-  [Fs - 24, B - 12],
-  [B - 12, Fs - 12],
-  [Cs - 12, Fs - 12],
-  [Fs - 24, Cs - 12],
-  [D - 24, A - 12],
-  [A - 12, E - 12],
-  [Cs - 12, Fs - 12],
-  [Fs - 24, Cs - 12],
-  [E - 24, A - 12],
-  [D - 24, A - 12],
-  [A - 12, D - 12]
-] @=> int lowerChords[][];
 
+// TODO: refactor so each array is one players notes
+// CHORDS becomes 3D array
 [
-  [D, D, A + 12],
-  [D, E, A + 12],
-  [E, A + 12, A + 12],
-  [E, A + 12, B + 12],
-  [E, Fs, Gs],  // 5 
-  [E, Fs, Gs],  
-  [Fs, Gs, A + 12],
-  [Fs, Gs, A + 12],  // 8
-  [Cs, Fs, Gs],
-  [Fs, Gs, A + 12],
-  [E, Fs, A + 12]
-
-] @=> int middleChords[][];
+  [[Fs - 24, B - 12], [Fs - 24, B - 12], [Fs - 24, Fs - 12] ],
+  [[B - 12, Fs - 12], [B - 12, Fs - 12], [B - 12, B] ],
+  [[Cs - 12, Fs - 12], [Cs - 12, Fs - 12], [Cs - 12, Cs] ],
+  [[Fs - 24, Cs - 12], [Fs - 24, Cs - 12], [Fs - 24, Fs - 12] ],
+  [[D - 24, A - 12], [D - 24, A - 12], [D - 24, D - 12] ],
+  [[A - 12, E - 12], [A - 12, E - 12], [A - 12, A] ],
+  [[Cs - 12, Fs - 12], [Cs - 12, Fs - 12], [Cs - 12, Cs] ],
+  [[Fs - 24, Cs - 12], [Fs - 24, Cs - 12], [Fs - 24, Fs - 12] ],
+  [[E - 24, A - 12], [E - 24, A - 12], [E - 24, E - 12] ],
+  [[D - 24, A - 12], [D - 24, A - 12], [D - 24, D - 12] ],
+  [[A - 12, D - 12], [A - 12, D - 12], [A - 12, A ]]
+] @=> int lowerChords[][][];
 
 [
-    [D + 12, E + 12, A + 24, D + 24],
-    [D + 12, E + 12, A + 24, D + 24],
-    [E + 12, A + 24, A + 24, E + 24],
-    [E + 12, A + 24, B + 24, E + 24],
-    [B + 12, B + 12, E + 12, B + 24],  // 5
-    [B + 12, Cs + 12, E + 12, B + 24],  // 6
-    [Cs + 12, Fs + 12, A + 24, Cs + 24],  // 7
-    [B + 12, Cs + 12, Fs + 12, A + 24],  // 8
-    [A + 12, B + 12, E + 12, Gs + 24],  // 9
-    [Gs, A + 12, E + 12, A + 24],  // 10
-    [Fs, A + 12, E + 12, A + 24]  // 11
+  [[D, D], [D, A + 12], [A + 12, A + 12]],
+  [[D, D], [E, E], [A + 12, A + 12]],
+  [[E, E], [E, A + 12], [A + 12, A + 12]],
+  [[E, E], [A + 12, A + 12], [B + 12, B + 12]],
+  [[E, E], [Fs, Fs], [Gs, Gs]],  // 5] 
+  [[E, E], [Fs, Fs], [Gs, Gs]],  // 5] 
+  [[Fs, Fs], [Gs, Gs], [A + 12, A + 12]],
+  [[Fs, Fs], [Gs, Gs], [A + 12, A + 12]],
+  [[Cs, Cs], [Fs, Fs], [Gs, Gs]],
+  [[Fs, Fs], [Gs, Gs], [A + 12, A + 12]],
+  [[E, E], [Fs, Fs], [A + 12, A + 12]]
 
-] @=> int upperChords[][];
+] @=> int middleChords[][][];
 
-int CHORDS[0][0];
+[
+    [[D + 12, E + 12], [E + 12, A + 24], [A + 24, D + 24]],
+    [[D + 12, E + 12], [E + 12, A + 24], [A + 24, D + 24]],
+    [[E + 12, A + 24], [A + 24, A + 24], [A + 24, E + 24]],
+    [[E + 12, A + 24], [A + 24, B + 24], [B + 24, E + 24]],
+    [[B + 12, B + 12], [B + 12, E + 12], [E + 12, B + 24]], 
+    [[B + 12, Cs + 12], [Cs + 12, E + 12], [E + 12, B + 24]],
+    [[Cs + 12, Fs + 12], [Fs + 12, A + 24], [A + 24, Cs + 24]],
+    [[B + 12, Cs + 12], [Cs + 12, Fs + 12], [Fs + 12, A + 24]],
+    [[A + 12, B + 12], [B + 12, E + 12], [E + 12, Gs + 24]],
+    [[Gs, A + 12], [A + 12, E + 12], [E + 12, A + 24]],
+    [[Fs, A + 12], [A + 12, E + 12], [E + 12, A + 24]] 
+
+] @=> int upperChords[][][];
+
+int CHORDS[0][0][0];
 
 // construct entire chord
 for (0 => int i; i < lowerChords.size(); i++) {
-    CHORDS << Util.concat(Util.concat(lowerChords[i], middleChords[i]), upperChords[i]);
+    CHORDS << Util.concat2(
+        Util.concat2(lowerChords[i], middleChords[i]), 
+        upperChords[i]
+    );
 }
 
 Util.print(CHORDS);
 
 
 /*==========Globals=========*/
-Paths paths;
 
 0 => int MOVIE_IDX;  // global movie file
 0 => int AUDIO_IDX; // global audio file (used when global grain pos is enabled)
@@ -188,10 +178,11 @@ fun void initialize() {
 fun void combFilterPitchSender() {
     // TODO: make this multicast?
     while (true) {
-        CHORDS[CHORD_IDX] @=> int chord[];
+        CHORDS[CHORD_IDX] @=> int chord[][];
         for (0 => int i; i < NUM_RECEIVERS; i++) {
-            chord[i % chord.size()] => int midiNote0;
-            chord[(i + 1) % chord.size()] => int midiNote1;
+            chord[i] @=> int notes[];
+            notes[0] => int midiNote0;
+            notes[1] => int midiNote1;
 
             xmits[i].start("/jakarta/p2/comb_filter_notes");
             xmits[i].add(midiNote0);

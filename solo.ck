@@ -8,7 +8,6 @@
 
 // scale
 [Util.C, Util.D, Util.E, Util.G, Util.A, Util.B] @=> int scale[]; 
-
 int keyToPitch_table[256];
 Event noteOffs[256];
 
@@ -52,7 +51,7 @@ fun void keysound(float freq, Gain @ g, Event noteOff) {
 
     FM @ org;
 
-    if (freq > 260.0 * 4.9/8.) {
+    if (freq > 260.0 * 4./3) {
         KrstlChr choir => env;
         choir.opAM(0,0.4);
         choir.opAM(2,0.4);
@@ -128,9 +127,9 @@ fun void startInstrument() {
             {
                 <<< "down:", msg.which >>>;
                     
-                keyToPitch_table[ msg.which ] => Std.mtof => float freq;			
+                keyToPitch_table[ msg.which ] + 5 => Std.mtof => float freq;			
                 // need to scale by major 3rd for some reason?
-                4.9/8. *=> freq;
+                // 4.9/8. *=> freq;
                 spork ~ keysound(freq, g, noteOffs[msg.which] );
             }
             

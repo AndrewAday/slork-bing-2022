@@ -93,6 +93,10 @@ public class Util {
         return a + t * (b - a);
     }
 
+    fun static float lerp01(float a, float b, float t) {
+        return lerp(a,b,clamp01(t));
+    }
+
     fun static time timeLerp(time a, time b, float t) {
         return a + t * (b - a);
     }
@@ -103,6 +107,10 @@ public class Util {
 
     fun static float invLerp(float a, float b, float c) {
         return (c-a) / (b-a);
+    }
+
+    fun static float invLerp01(float a, float b, float c) {
+        return clamp01(invLerp(a,b,c));
     }
 
     // remaps c from [a,b] to range [x,y]
@@ -210,17 +218,34 @@ public class Util {
         return ret;
     }
 
+    fun static int[][] concat2(int a[][], int b[][]) {
+        a @=> int ret[][];
+        for (0 => int i; i < b.size(); i++) {
+            ret << b[i];
+        }
+        return ret;
+    }
+
     fun static void print(int a[]) {
-        "" => string ret;
+        "[" => string ret;
         for (0 => int i; i < a.size(); i++) {
             (a[i] + " ") +=> ret;
         }
-        Util.print(ret);
+        Util.print(ret + "]");
     }
 
     fun static void print(int a[][]) {
+        Util.print("{");
         for (0 => int i; i < a.size(); i++)
             Util.print(a[i]);
+        Util.print("}");
+    }
+
+    fun static void print(int a[][][]) {
+        Util.print("[");
+        for (0 => int i; i < a.size(); i++)
+            Util.print(a[i]);
+        Util.print("]");
     }
 
     /* ========== Midi Helper Functions ========== */
@@ -277,6 +302,7 @@ public class Util {
 
     /* =========== Keycodes =========== */
     2 => static int KEY_DELETE;
+    43 => static int KEY_TAB;
     44 => static int KEY_SPACE; 
     45 => static int KEY_DASH;
     46 => static int KEY_EQUAL;
@@ -307,6 +333,12 @@ public class Util {
     52 => static int KEY_APPOSTROPHE;
     40 => static int KEY_ENTER;
 
+    30 => static int KEY_1;
+    31 => static int KEY_2;
+    32 => static int KEY_3;
+    33 => static int KEY_4;
+    34 => static int KEY_5;
+    35 => static int KEY_6;
 }   
 
 Util util;

@@ -46,7 +46,7 @@ public class GameTrack {
   0.0 => float RZOff;
 
   // z axis deadzone
-  .03 => float DEADZONE;
+  .03 => static float Z_DEADZONE;
 
   // angle mapping  (0 degrees is straight up)
   40.0 => float ANGLE_MAX;
@@ -170,7 +170,7 @@ public class GameTrack {
                       else { // set z axis
                           Math.max(
                             0.0,
-                            getZ(msg.which, msg.axisPosition) - DEADZONE
+                            getZ(msg.which, msg.axisPosition) - Z_DEADZONE
                           ) => this.curAxis[msg.which];
                       }
                   }
@@ -249,6 +249,14 @@ public class GameTrack {
 
   fun float GetCombinedZ() {
     return this.curAxis[LZ] + this.curAxis[RZ];
+  }
+
+  fun float GetAvgZ() {
+      return GetCombinedZ() * .5;
+  }
+
+  fun float GetMaxZ() {
+      return Math.max(curAxis[LZ], curAxis[RZ]);
   }
 
 }

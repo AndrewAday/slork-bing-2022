@@ -20,132 +20,23 @@ Questions
 - what is Lisa.bi() ?
 */
 
-class Sampler {
-    LiSa lisa;
-    SndBuf sndbuf;
-    PoleZero p;
-    Event playContsOffEvent;
 
-    string sample;
-
-    0 => static int TYPE_ONESHOT;
-    1 => static int TYPE_CONTS;
-    int type;
-    
-    false => int loaded;
-    0::ms => dur lastContsPlayPos;
-
-    // patch lisa to out
-    fun void patch(UGen @ out) {
-        .99 => p.blockZero;
-        lisa.chan(0) => p => out;
-    }
-
-    // load sample into lisa
-    fun void load(string path, string filename, int type) {
-        if (loaded) {
-            <<< "error: sampler already loaded, reloading not handled" >>>;
-            return;
-        }
-
-        filename => this.sample;
-        type => this.type;
-        path + filename => sndbuf.read;
-
-        // <<< "channels: ", sndbuf.channels() >>>;
-
-        sndbuf.samples()::samp => lisa.duration;
-        for (0 => int i; i < sndbuf.samples(); i++) {
-            lisa.valueAt(sndbuf.valueAt(i  * sndbuf.channels()), i::samp );
-        }
-        lisa.play(false);
-        lisa.loop(false);
-        lisa.maxVoices(25);  // max number of concurrent samples
-
-        true => loaded;
-
-        <<< "loaded: ", sample >>>;
-    }
-
-    fun int _tryGetVoice() {
-        if (!loaded) {
-            <<< "error: trying to play lisa before loading sample" >>>; 
-            return -1; 
-        }
-
-        lisa.getVoice() => int voice;
-        if (voice < 0) {
-            <<< "cannot play sample, hit max voice threshold: ", lisa.maxVoices() >>>;
-            return -1;
-        }
-
-        return voice;
-    }
-
-    // fire a sample once, to play from start to finish
-    fun void playOneshot() {
-        _tryGetVoice() => int voice;
-        if (voice < 0) return;
-
-        500::ms => dur rampDownDur;
-
-
-        lisa.loop(voice, false);
-        lisa.playPos(voice, 0::ms); 
-        lisa.rate(voice, 1); // set playrate
-
-        lisa.play(voice, true);
-        lisa.duration() - rampDownDur => now;
-        lisa.rampDown(voice, rampDownDur);
-    }
-
-    // loops sample as long as key is held down
-    fun void playContinuous() {
-        2::second => dur RAMP_TIME;
-
-        // _tryGetVoice() => int voice;
-        // if (voice < 0) return;
-
-        0 => int voice; // always use the same voice
-
-        lisa.loop(voice, true);
-        lisa.playPos(voice, this.lastContsPlayPos);
-        lisa.rate(voice, 1);
-
-        lisa.rampUp(voice, RAMP_TIME);
-
-        playContsOffEvent => now; // wait for key off
-
-        lisa.rampDown(voice, RAMP_TIME);
-        lisa.playPos(voice) => this.lastContsPlayPos;  // save where we left off
-
-        // <<< lisa.playPos(voice) / Util.getFS() >>>;
-        // lisa.loop(voice, false); // turn off looping to free voice
-    }
-
-    fun void play() {
-        Util.print("\n    playing: " + this.sample + "\n");
-        if (type == TYPE_CONTS) {
-            spork ~ playContinuous();
-        } else if (type == TYPE_ONESHOT) {
-            spork ~ playOneshot();
-        }
-    }
-
-    fun void stop() {  // only applies to conts samples
-        if (this.type == TYPE_CONTS) {
-            Util.print("\n    stopping: " + this.sample + "\n");
-            playContsOffEvent.broadcast();
-        }
-    }
-}
-
-class SoundBoard {
+public class SoundBoard extends Switchable {
+    "SoundBoard" => this.NAME;
     /* signal flow */
-    Gain mainGain;
+    Gain mainGain => this.switch_gain;
 
 
     Sampler @ samplers[256];  // a sampler for every possible keycode
+
+    fun void init(UGen @ out, int kbNum, int mouseNum) {
+        this.init(out); // parent switchable
+
+        // register samples
+        registerSamples();
+        // start soundboard
+        startSoundBoard(kbNum, mouseNum);
+    }
 
     fun void patch(UGen @ out) {
         mainGain => out;
@@ -168,7 +59,7 @@ class SoundBoard {
     fun void startSoundBoard(int kbNum, int mouseNum) {
 
         spork ~ _keyboardListener(kbNum);
-        spork ~ _mousepadListener(mouseNum);
+        // spork ~ _mousepadListener(mouseNum);
 
         1::second => now;
         Util.print("~~~~~ soundboard ready! ~~~~~"); 
@@ -207,6 +98,10 @@ class SoundBoard {
         {
             // wait on HidIn as event
             hi => now;
+
+            if (!this.IS_ACTIVE) {
+                continue;
+            }
 
             // messages received
             while( hi.recv( msg ) )
@@ -264,9 +159,14 @@ class SoundBoard {
         <<< "keyboard found" >>>;
 
         while (true) {
+            if (!this.IS_ACTIVE) {
+                20::ms => now;
+                continue;
+            }
+
             hi => now;
             while (hi.recv(msg)) {
-                if (msg.isButtonDown() && msg.which == 43) {
+                if (msg.isButtonDown() && msg.which == Util.KEY_TAB) {
                     printDocs();
                     continue;
                 }
@@ -307,45 +207,38 @@ class SoundBoard {
                 Util.print("  " + j + ":  " + samplers[ROWS[i][j]].sample);
             }
         }
+    }
+
+    fun void registerSamples() {
+        // QWERTY row -- oneshot bird
+        registerSample(20, me.dir() + "/Samples/Bird/", "annas-hummingbird-oneshot.wav", Sampler.TYPE_ONESHOT);
+        registerSample(26, me.dir() + "/Samples/Bird/", "chestnut-backed-chickadee-oneshot.wav", Sampler.TYPE_ONESHOT);
+        registerSample(8, me.dir() + "/Samples/Bird/", "house-finch-oneshot.wav", Sampler.TYPE_ONESHOT);
+        registerSample(21, me.dir() + "/Samples/Bird/", "house-sparrow-oneshot.wav", Sampler.TYPE_ONESHOT);
+        registerSample(23, me.dir() + "/Samples/Bird/", "red-winged-blackbird-oneshot.wav", Sampler.TYPE_ONESHOT);
+        registerSample(28, me.dir() + "/Samples/Bird/", "robin-oneshot.wav", Sampler.TYPE_ONESHOT);
+        registerSample(24, me.dir() + "/Samples/Bird/", "song-sparrow-oneshot.wav", Sampler.TYPE_ONESHOT);
+
+        // ASDFG row  -- conts bird
+        registerSample(4, me.dir() + "/Samples/Bird/", "annas-hummingbird.wav", Sampler.TYPE_CONTS);
+        registerSample(22, me.dir() + "/Samples/Bird/", "chestnut-backed-chickadee.wav", Sampler.TYPE_CONTS);
+        registerSample(7, me.dir() + "/Samples/Bird/", "house-finch.wav", Sampler.TYPE_CONTS);
+        registerSample(9, me.dir() + "/Samples/Bird/", "house-sparrow.wav", Sampler.TYPE_CONTS);
+        registerSample(10, me.dir() + "/Samples/Bird/", "red-winged-blackbird.wav", Sampler.TYPE_CONTS);
+        registerSample(11, me.dir() + "/Samples/Bird/", "robin.wav", Sampler.TYPE_CONTS);
+        registerSample(13, me.dir() + "/Samples/Bird/", "song-sparrow.wav", Sampler.TYPE_CONTS);
+
+        // ZXCVB row  -- conts field
+        registerSample(29, me.dir() + "/Samples/Field/", "footsteps-on-grass.wav", Sampler.TYPE_CONTS);
+        registerSample(27, me.dir() + "/Samples/Field/", "creek.wav", Sampler.TYPE_CONTS);
+        registerSample(6, me.dir() + "/Samples/Field/", "spring-rain.wav", Sampler.TYPE_CONTS);
+        registerSample(25, me.dir() + "/Samples/Field/", "wind.wav", Sampler.TYPE_CONTS);
+        registerSample(5, me.dir() + "/Samples/Field/", "crickets.wav", Sampler.TYPE_CONTS);
+        registerSample(17, me.dir() + "/Samples/Field/", "bumblebees.wav", Sampler.TYPE_CONTS);
 
     }
 }
 
-SoundBoard sb;
-
-// QWERTY row -- oneshot bird
-sb.registerSample(20, me.dir() + "/Samples/Bird/", "annas-hummingbird-oneshot.wav", Sampler.TYPE_ONESHOT);
-sb.registerSample(26, me.dir() + "/Samples/Bird/", "chestnut-backed-chickadee-oneshot.wav", Sampler.TYPE_ONESHOT);
-sb.registerSample(8, me.dir() + "/Samples/Bird/", "house-finch-oneshot.wav", Sampler.TYPE_ONESHOT);
-sb.registerSample(21, me.dir() + "/Samples/Bird/", "house-sparrow-oneshot.wav", Sampler.TYPE_ONESHOT);
-sb.registerSample(23, me.dir() + "/Samples/Bird/", "red-winged-blackbird-oneshot.wav", Sampler.TYPE_ONESHOT);
-sb.registerSample(28, me.dir() + "/Samples/Bird/", "robin-oneshot.wav", Sampler.TYPE_ONESHOT);
-sb.registerSample(24, me.dir() + "/Samples/Bird/", "song-sparrow-oneshot.wav", Sampler.TYPE_ONESHOT);
-
-// ASDFG row  -- conts bird
-sb.registerSample(4, me.dir() + "/Samples/Bird/", "annas-hummingbird.wav", Sampler.TYPE_CONTS);
-sb.registerSample(22, me.dir() + "/Samples/Bird/", "chestnut-backed-chickadee.wav", Sampler.TYPE_CONTS);
-sb.registerSample(7, me.dir() + "/Samples/Bird/", "house-finch.wav", Sampler.TYPE_CONTS);
-sb.registerSample(9, me.dir() + "/Samples/Bird/", "house-sparrow.wav", Sampler.TYPE_CONTS);
-sb.registerSample(10, me.dir() + "/Samples/Bird/", "red-winged-blackbird.wav", Sampler.TYPE_CONTS);
-sb.registerSample(11, me.dir() + "/Samples/Bird/", "robin.wav", Sampler.TYPE_CONTS);
-sb.registerSample(13, me.dir() + "/Samples/Bird/", "song-sparrow.wav", Sampler.TYPE_CONTS);
-
-// ZXCVB row  -- conts field
-sb.registerSample(29, me.dir() + "/Samples/Field/", "footsteps-on-grass.wav", Sampler.TYPE_CONTS);
-sb.registerSample(27, me.dir() + "/Samples/Field/", "creek.wav", Sampler.TYPE_CONTS);
-sb.registerSample(6, me.dir() + "/Samples/Field/", "spring-rain.wav", Sampler.TYPE_CONTS);
-sb.registerSample(25, me.dir() + "/Samples/Field/", "wind.wav", Sampler.TYPE_CONTS);
-sb.registerSample(5, me.dir() + "/Samples/Field/", "crickets.wav", Sampler.TYPE_CONTS);
-sb.registerSample(17, me.dir() + "/Samples/Field/", "bumblebees.wav", Sampler.TYPE_CONTS);
-
-// start soundboard
-sb.startSoundBoard(0, 3);
-sb.patch(dac);
-
-while (true) {
-    10::ms => now;
-}
 
 
 

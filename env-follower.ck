@@ -34,7 +34,7 @@ public class EnvFollower extends Chugraph {
             Math.pow(p.last(), 1/3.) => FOLLOWER_VALUE;
 
             // check for threshold
-            if( p.last() > 0.01 ) {}
+            // if( p.last() > 0.01 ) {}
             
             // rate to check
             20::ms => now;
