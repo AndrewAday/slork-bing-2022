@@ -65,7 +65,8 @@ void setup()
 {
   //colorMode(HSB, width, height, 100);
   // frame rate
-  frameRate(24);
+  //frameRate(24);
+  frameRate(48);
   background(0);
   
   // volume (tho this doesn't seem to work unless repeated below)

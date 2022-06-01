@@ -136,14 +136,14 @@ class VideoLoader {
      m.loop();
      
      // on beijing night traffic video only this doesn't work???
-     if (movieSpeed < 0 && m.time() < 1) {
-      m.speed(1);
-      movieSpeed = 1;
+     //if (movieSpeed < 0 && m.time() < 1) {
+     // m.speed(1);
+     // movieSpeed = 1;
       
-     } else if (m.duration() - m.time() < .5) {
-      m.speed(-1.0);
-      movieSpeed = -1;
-     }
+     //} else if (m.duration() - m.time() < .5) {
+     // m.speed(-1.0);
+     // movieSpeed = -1;
+     //}
      
      return m;
    }
@@ -160,7 +160,9 @@ class VideoLoader {
       if (!curr.filename.equals(next.filename)) {
         println("next: " + next.filename);
         switcher[1].stop();
+        next.speed(.5);
         next.loop();
+        
         switcher[1] = next;
         break;
       }
@@ -180,7 +182,9 @@ class VideoLoader {
       if (!curr.filename.equals(next.filename)) {
         println("next: " + next.filename);
         switcher[0].stop();
+        next.speed(.5);
         next.loop();
+        
         switcher[0] = next;
         break;
       }
