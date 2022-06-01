@@ -41,7 +41,7 @@ class VideoLoader {
      "p2/bad/mining-explosion.mp4",
      "p2/bad/behemoth-mine.mp4",
      "p2/bad/wind-turbine.mp4",
-     "p2/bad/behemoth-factory.mp4", 
+     "p2/bad/behemoth-factory-looped.mp4", 
    };
    
    private final String[] quickshotPaths = {
