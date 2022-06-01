@@ -2,48 +2,53 @@ class VideoLoader {
   private PApplet that;
   
   private final String[] p1Paths = {
-    "p1/lake-shooting-stars.mp4",
+    "p1/dunes.mp4",
+    "p1/fog.mp4",
+    "p1/lake-stars.mp4",
     "p1/night-thunderstorm.mp4",
     "p1/northern-lights.mp4",
-    "p1/orange-clouds-timelapse.mp4",
-    "p1/rock-stars-timelapse.mp4",
+    "p1/orange-clouds.mp4",
+    "p1/rock-stars.mp4",
+    "p1/stars-thunderstorm.mp4",
+    "p1/stars-timelapse.mp4",
+    "p1/stars-trees.mp4",
+    "p1/thunderstorm-far.mp4",
     "p1/joshuatree-landscape.mp4",
-    "p1/joshuatree-stars.mp4"
+    "p1/joshuatree-single.mp4"
   };
   
   
   private final String[] p2Paths = {
       // good
-     "good/clouds.mp4",
-     "good/beijing-aerial-still.mp4",
-     "good/coaster.mp4",
-     "good/feetwalking.mp4",
-     "good/merrygoround.mp4",
-     "good/gaming-crowds.mp4",
-     "good/beijing-night-traffic.mp4",
-     "good/beijing-3-shot.mp4",
-     "good/hongkong-crowds2.mp4",
-     "good/hongkong-building.mp4",
-     "good/fireworks-nologo.mp4",
+     "p2/good/beijing-aerial-still-looped.mp4",
+     "p2/good/coaster.mp4",
+     "p2/good/feetwalking.mp4",
+     "p2/good/merrygoround-looped.mp4",
+     "p2/good/gaming-crowds.mp4",
+     "p2/good/beijing-night-traffic-looped.mp4",
+     "p2/good/beijing-3-shot-looped.mp4",
+     "p2/good/hongkong-crowds2-looped.mp4",
+     "p2/good/hongkong-building.mp4",
+     "p2/good/fireworks-nologo.mp4",
      // bad
-     "bad/behemoth-forge-1-2.mp4",
-     "bad/behemoth-forge-2.mp4",
-     "bad/behemoth-forge-3.mp4",
-     "bad/deforestation1.mp4",
-     "bad/deforestation2.mp4",
-     "bad/deforestation3.mp4",
-     "bad/rivers-drying-2-shot.mp4",
-     "bad/mining-explosion.mp4",
-     "bad/behemoth-mine.mp4",
-     "bad/wind-turbine.mp4",
-     "bad/behemoth-factory.mp4", 
+     "p2/bad/behemoth-forge-1-2.mp4",
+     "p2/bad/behemoth-forge-2.mp4",
+     "p2/bad/behemoth-forge-3.mp4",
+     "p2/bad/deforestation1.mp4",
+     "p2/bad/deforestation2.mp4",
+     "p2/bad/deforestation3.mp4",
+     "p2/bad/rivers-drying-2-shot.mp4",
+     "p2/bad/mining-explosion.mp4",
+     "p2/bad/behemoth-mine.mp4",
+     "p2/bad/wind-turbine.mp4",
+     "p2/bad/behemoth-factory.mp4", 
    };
    
    private final String[] quickshotPaths = {
-     "good/clouds.mp4",
-     "bad/behemoth-forge-1-2.mp4",
-     "good/beijing-aerial-still.mp4",
-     "bad/behemoth-forge-2.mp4",
+     "p2/good/clouds.mp4",
+     "p2/bad/behemoth-forge-1-2.mp4",
+     "p2/good/beijing-aerial-still.mp4",
+     "p2/bad/behemoth-forge-2.mp4",
    }; // TODO add quickshot paths from quickshot.pde
    
    private final String[] endPaths = {
