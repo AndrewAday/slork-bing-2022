@@ -5,7 +5,6 @@ class VideoLoader {
     "p-one/dunes.mp4",
     "p-one/fog.mp4",
     "p-one/lake-stars.mp4",
-    "p-one/night-thunderstorm.mp4",
     "p-one/northern-lights.mp4",
     "p-one/orange-clouds.mp4",
     "p-one/rock-stars.mp4",
@@ -46,24 +45,36 @@ class VideoLoader {
    
    private final String[] quickshotPaths = {
      "p-two/bad/behemoth-forge-1-2.mp4",
-     "p-two/bad/behemoth-forge-2.mp4",
-     "p-two/bad/behemoth-forge-3.mp4",
-     "p-two/bad/deforestation-all.mp4",
-     "p-two/bad/rivers-drying-2-shot.mp4",
-     "p-two/bad/mining-explosion.mp4",
-     "p-two/bad/behemoth-mine.mp4",
-     "p-two/bad/wind-turbine.mp4",
-     "p-two/bad/behemoth-factory-looped.mp4", 
      "p-two/good/beijing-aerial-still-looped.mp4",
+     
+     "p-two/bad/behemoth-forge-2.mp4",
      "p-two/good/coaster.mp4",
+     
+     "p-two/bad/behemoth-forge-3.mp4",
      "p-two/good/feetwalking.mp4",
+     
+     "p-two/bad/deforestation-all.mp4",
      "p-two/good/merrygoround-looped.mp4",
+     
+     "p-two/bad/rivers-drying-2-shot.mp4",
      "p-two/good/gaming-crowds.mp4",
+     
+     "p-two/bad/mining-explosion.mp4",
      "p-two/good/beijing-night-traffic-looped.mp4",
+     
+     "p-two/bad/behemoth-mine.mp4",
      "p-two/good/beijing-3-shot-looped.mp4",
+     
+     "p-two/bad/driving.mp4",
      "p-two/good/hongkong-crowds2-looped.mp4",
+         
+     "p-two/bad/wind-turbine.mp4",
      "p-two/good/hongkong-building.mp4",
+     
+     "p-two/bad/behemoth-factory-looped.mp4",
      "p-two/good/fireworks-nologo.mp4",
+     
+     // TODO: add another good/ to pair with construction.mp4
      
      "quickshot/deer.mp4",
      "quickshot/deer-mounted.mp4",
@@ -98,7 +109,7 @@ class VideoLoader {
    private ArrayList<Movie> endMovies = new ArrayList<Movie>();
    private ArrayList<ArrayList<Movie>> movies = new ArrayList<ArrayList<Movie>>();
    
-   private int[] movieIdxs = {0, 0, 0, 0};
+   public int[] movieIdxs = {0, 0, 0, 0};
    
    private Movie m;
    private float movieSpeed = 1;
@@ -152,14 +163,22 @@ class VideoLoader {
    }
    
    public Movie setMovie(MOVIEPHASE which, int movieIdx) {
-     if (movieIdxs[which.ordinal()] == movieIdx)
-       return m;  // already playing, do nothing
+     var movieList = movies.get(which.ordinal());
+     Movie next_m = movieList.get(movieIdx % movieList.size());
+     movieIdxs[which.ordinal()] = movieIdx;
+     
+     if (next_m == m) {
+       println("no need to set, movie identical");
+       return m;
+     }
+     
+     //if (movieIdxs[which.ordinal()] == movieIdx)
+     //  return m;  // already playing, do nothing
       
      if (m != null)
        m.stop();
      
-     var movieList = movies.get(which.ordinal());
-     m = movieList.get(movieIdx % movieList.size());
+     m = next_m;
      movieIdxs[which.ordinal()] = movieIdx;
      
     println("setting new movie: " + m.filename);
@@ -167,6 +186,10 @@ class VideoLoader {
      movieSpeed = 1;
      m.loop();
      return m;
+   }
+   
+   public int getMovieIdx(MOVIEPHASE which) {
+     return movieIdxs[which.ordinal()];
    }
    
    public Movie getMovie() {

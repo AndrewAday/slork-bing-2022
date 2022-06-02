@@ -167,6 +167,7 @@ public class Combulator extends Switchable {
         gt.curAxis[gt.RZ] => float z;
 
         if (z < gt.Z_DEADZONE) {
+            0 => comb_gain.gain;
             return;
         }
 

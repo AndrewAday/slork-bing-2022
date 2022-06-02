@@ -6,18 +6,18 @@ public class Paths {
     0 => int KB_NUM;
 
     /* ========network config ============== */
-    "localhost" => string PROCESSING_HOSTNAME;
+    "azaday.local" => string PROCESSING_HOSTNAME;
     6450 => int PROCESSING_PORT;
     [
         "localhost"
         // "gelato.local",
-        // "pho.local",
+        // "udon.local",
         // "spam.local",
-        // "kimchi.local",
-        // "lasagna.local",
         // "nachos.local",
-        // "donut.local",
+        // "lasagna.local",
         // "meatloaf.local",
+        // "donut.local",
+        // "kimchi.local"
         // "chowder.local"
         // "Peanutbutter.local",
         // "udon.local",
@@ -40,7 +40,7 @@ public class Paths {
 
     [ // TODO: update to actual mp4s
         // good
-        "good/clouds.mp4",
+        // "good/clouds.mp4",
         "good/beijing-aerial-still.mp4",
         "good/coaster.mp4",
         "good/feetwalking.mp4",

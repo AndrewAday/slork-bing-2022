@@ -129,6 +129,7 @@ public class Shepard extends Switchable {
         gt.GetMaxZ() => float z;
 
         if (z < gt.Z_DEADZONE) {
+            0 => this.shepard_gain.gain;
             return;
         }
 

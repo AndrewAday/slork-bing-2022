@@ -84,7 +84,7 @@ public class Droner extends Switchable {
   }
 
   .0 => float Z_BEGIN_VOICE;
-  0.05 => float Z_VOICE_MAX;
+  0.08 => float Z_VOICE_MAX;
 
   -1. => float X_BEGIN_VOICE;
   1. => float X_VOICE_MAX;
@@ -114,8 +114,8 @@ public class Droner extends Switchable {
     Util.clamp01(Util.remap(X_BEGIN_VOICE, X_VOICE_MAX, 0, 1, gt.curAxis[x])) => float temp;
     // <<< temp >>>;
     // (1 - temp) * 2 => voice_gain.gain;
-    (1 - temp)  * Util.remap(Z_BEGIN_VOICE, Z_VOICE_MAX, 0, 1, gt.curAxis[z]) => ll_voice_gain.gain;
-    temp  * Util.remap(Z_BEGIN_VOICE, Z_VOICE_MAX, 0, 1, gt.curAxis[z]) => lr_voice_gain.gain;
+    (1 - temp)  * Util.remap01(gt.Z_DEADZONE, Z_VOICE_MAX, 0, 1, gt.curAxis[z]) => ll_voice_gain.gain;
+    temp  * Util.remap01(gt.Z_DEADZONE, Z_VOICE_MAX, 0, 1, gt.curAxis[z]) => lr_voice_gain.gain;
     // (1 - temp) => ll_voice_gain.gain;
 
     // lerp voice grain length

@@ -174,7 +174,7 @@ void draw()
       for (int i = 0; i < players.size(); i++) {
         
         // set tint
-        Player currPlayer = players.get(i % 1);
+        Player currPlayer = players.get(i);
         var alpha = max(100, 255*currPlayer.gain);
         println("alpha: " + alpha);
         tint(255, alpha);  // this method doesn't drop frames
@@ -267,9 +267,11 @@ void oscEvent(OscMessage msg)
           int movieID = msg.get(1).intValue();
           float gain = msg.get(5).floatValue();
           
-           println("playerID: " + playerID + ", gain:" + gain + ", movie:" + movieID);
-          if (playerID == 0) {
+          println("playerID: " + playerID + ", gain:" + gain + ", movie:" + movieID);
+          if (playerID == 0) { 
+            println("new movieID: " + movieID);
             vl.setMovie(MOVIEPHASE.P2, movieID);
+            //vl.stepMovie(MOVIEPHASE.P2);  // can no longer go backwards. todo fix.
           }
           Player currPlayer = players.get(playerID);
           currPlayer.gain = min(gain * 3 , 1);
@@ -306,16 +308,21 @@ void keyPressed() {
   else if (key == '2') {
     println("=========== ENTERING PART 2 ============");
     phase = MOVIEPHASE.P2;
+    vl.setMovie(MOVIEPHASE.P2, vl.getMovieIdx(MOVIEPHASE.P2));
+    //vl.setMovie(MOVIEPHASE.P2, 0);
+    //vl.stepMovie(MOVIEPHASE.P2);  // just to increment counter, janky i know...
   }
   else if (key == '3') {
     println("=========== ENTERING QUICK ============");
     phase = MOVIEPHASE.QUICKSHOT;
+    vl.setMovie(MOVIEPHASE.QUICKSHOT, 0);
     qs.queueVideo();
   }
   else if (key == '4') {
     // trigger cross fade in last shot
     println("Fading to final");
     fadeStartTime = millis();
+    //vl.setMovie(MOVIEPHASE.END, 0);
     vl.stepMovie(MOVIEPHASE.END);
     phase = MOVIEPHASE.END;
   }
