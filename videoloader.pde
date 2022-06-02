@@ -33,7 +33,7 @@ class VideoLoader {
      "p-two/bad/behemoth-forge-1-2.mp4",
      "p-two/bad/behemoth-forge-2.mp4",
      "p-two/bad/behemoth-forge-3.mp4",
-     "p-two/bad/deforestation-all.mp4",
+     "p-two/bad/deforestation-looped.mp4",
      "p-two/bad/rivers-drying-2-shot.mp4",
      "p-two/bad/mining-explosion.mp4",
      "p-two/bad/behemoth-mine.mp4",
