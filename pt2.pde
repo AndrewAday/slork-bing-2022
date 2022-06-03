@@ -35,7 +35,7 @@ public enum TILEMODE {FULLSCREEN, TILED, CROPPED};
 TILEMODE tileMode = TILEMODE.CROPPED;
 
 
-public enum MOVIEPHASE { P1, P2, QUICKSHOT, END, NONE };
+public enum MOVIEPHASE { P1, P2, QUICKSHOT, END, BLACK, NONE };
 MOVIEPHASE phase = MOVIEPHASE.NONE;
 
 ArrayList<Player> players = new ArrayList<Player>();
@@ -229,6 +229,9 @@ void draw()
         qs.queueVideo();
       }
       break;
+    case BLACK:
+      background(0);
+      break;
     case END:
       //println("handling p4");
       float fader = map( millis() - fadeStartTime, 0, fadeDuration, 0, 255);
@@ -325,6 +328,11 @@ void keyPressed() {
     //vl.setMovie(MOVIEPHASE.END, 0);
     vl.stepMovie(MOVIEPHASE.END);
     phase = MOVIEPHASE.END;
+  }
+  else if (key == '5') {
+    // black screen
+    println("Cut to black");
+    phase = MOVIEPHASE.BLACK;
   }
   else if (keyCode == DOWN) {
     println("faster shot: " + qs.initialDelay * qs.delayRate);
