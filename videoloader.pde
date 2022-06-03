@@ -91,10 +91,10 @@ class VideoLoader {
    private final String[] endPaths = {
      "p-four/window-rain.mp4",
      "p-four/water-walk.mp4",
-     "p-four/pool.mp4",
-     "p-four/olive-tree.mp4",
-     "p-four/train-side-view.mp4",
-     "p-four/trees-and-clouds.mp4",
+    //  "p-four/pool.mp4",
+    //  "p-four/olive-tree.mp4",
+    //  "p-four/train-side-view.mp4",
+    //  "p-four/trees-and-clouds.mp4",
      "p-four/waves.mp4",
      
    };
@@ -207,52 +207,61 @@ class VideoLoader {
      
      return m;
    }
-   
-   public int numMovies() {
-     return p2Movies.size();
-   }
-   
-   public void p1QueueRight() {
-    Movie curr = switcher[0];
-    while (true) {
-      int r = int(random(p1Movies.size()));
-      Movie next = p1Movies.get(r);
-      if (!curr.filename.equals(next.filename)) {
-        println("next: " + next.filename);
-        switcher[1].stop();
-        next.speed(.5);
-        next.loop();
-        
-        switcher[1] = next;
-        break;
-      }
-    }
-   }
 
-  public void initP1() {
+    public void initP1() {
     this.switcher[0].loop();
     this.switcher[1].loop();
   }
-   
-   public void p1QueueLeft() {
-    Movie curr = switcher[1];
-    while (true) {
-      int r = int(random(p1Movies.size()));
-      Movie next = p1Movies.get(r);
-      if (!curr.filename.equals(next.filename)) {
-        println("next: " + next.filename);
-        switcher[0].stop();
-        next.speed(.5);
-        next.loop();
+
+   public void p1QueueRight() {
+    // Movie curr = switcher[0];
+    // while (true) {
+    //   int r = int(random(p1Movies.size()));
+    //   Movie next = p1Movies.get(r);
+    //   if (!curr.filename.equals(next.filename)) {
+    //     println("next: " + next.filename);
+    //     switcher[1].stop();
+    //     next.speed(.5);
+    //     next.loop();
         
-        switcher[0] = next;
-        break;
-      }
-    }
+    //     switcher[1] = next;
+    //     break;
+    //   }
+    // }
+    int movieIdx = movieIdxs[MOVIEPHASE.P1.ordinal()];
+    var movieList = movies.get(MOVIEPHASE.P1.ordinal());
+    switcher[1].stop();
+    switcher[1] = movieList.get(movieIdx % movieList.size());
+   }
+
+
+   public void p1QueueLeft() {
+    // Movie curr = switcher[1];
+    // while (true) {
+    //   int r = int(random(p1Movies.size()));
+    //   Movie next = p1Movies.get(r);
+    //   if (!curr.filename.equals(next.filename)) {
+    //     println("next: " + next.filename);
+    //     switcher[0].stop();
+    //     next.speed(.5);
+    //     next.loop();
+        
+    //     switcher[0] = next;
+    //     break;
+    //   }
+    // }
+    int movieIdx = movieIdxs[MOVIEPHASE.P1.ordinal()];
+    var movieList = movies.get(MOVIEPHASE.P1.ordinal());
+    switcher[0].stop();
+    switcher[0] = movieList.get(movieIdx % movieList.size());
    }
    
    public void exitP1() {
      switcher[0].stop();
      switcher[1].stop();
    }
+
+    public int numMovies() {
+      return p1Movies.size();
+    }
 }
