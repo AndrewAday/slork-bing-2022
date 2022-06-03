@@ -155,7 +155,7 @@ fun void initialize() {
             "./Samples/Drones/wtx-1.wav",  // sample
             p4droner.lower_pitches, // pitch set
             1.0,  // pitch offset
-            1.0  // gain
+            .7  // gain
         );
     } else if (is_mid(playerID)) {
         p4droner.init(
@@ -163,7 +163,7 @@ fun void initialize() {
             "./Samples/Drones/male-choir.wav",  // sample
             p4droner.middle_pitches, // pitch set
             .5,  // pitch offset
-            .5 // gain
+            .2 // gain
         );
     } else if (is_high(playerID)) {
         p4droner.init(
@@ -171,7 +171,7 @@ fun void initialize() {
             "./Samples/Drones/female-choir.wav",  // sample
             p4droner.upper_pitches, // pitch set
             .5,  // pitch offset
-            .5 // gain
+            .2 // gain
         );
     }
     p4droner @=> switchableInstruments[3];
