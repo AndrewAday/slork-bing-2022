@@ -90,7 +90,8 @@ public class P4Droner extends Switchable {
     }
 
     fun void init(
-        UGen @ out, string sample_path, float pitch_set[], float play_rate_offset
+        UGen @ out, string sample_path, float pitch_set[], float play_rate_offset,
+        float lisa_voice_gains
     ) {
         this.init(out);
 
@@ -99,6 +100,7 @@ public class P4Droner extends Switchable {
 
         create_granulator(sample_path, l_voice_gain) @=> this.l_voice;
         create_granulator(sample_path, r_voice_gain) @=> this.r_voice;
+        lisa_voice_gains => this.l_voice.lisa.gain => this.r_voice.lisa.gain;
 
         assign_voice_freq(l_voice, pitch_set);
         assign_voice_freq(r_voice, pitch_set);
@@ -180,7 +182,8 @@ fun void unit_test() {
     dac, 
     "./Samples/Drones/male-choir.wav",  // sample
     droner.middle_pitches, // pitch set
-    .5  // pitch offset
+    .5,  // pitch offset
+    1.0 // gain
   );
 
   // lower voice
