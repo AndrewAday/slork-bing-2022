@@ -26,7 +26,7 @@ public class VideoLoader {
      "p-two/good/merrygoround-looped.mp4",
      "p-two/good/gaming-convention-looped.mp4",
      "p-two/good/beijing-night-traffic-looped.mp4",
-     "p-two/good/beijing-3-shot-looped.mp4",
+     "p-two/good/beijing-3-shot-2.mp4",
      "p-two/good/hongkong-crowds2-looped.mp4",
      "p-two/good/hongkong-building.mp4",
      "p-two/good/fireworks-nologo.mp4",
@@ -36,7 +36,7 @@ public class VideoLoader {
      "p-two/bad/behemoth-forge-3.mp4",
      "p-two/bad/deforestation-looped.mp4",
      //"p-two/bad/deforestation-all.mp4",
-     "p-two/bad/rivers-drying-2-shot.mp4",
+     "p-two/bad/rivers-drying-2.mp4",
      "p-two/bad/mining-explosion.mp4",
      "p-two/bad/behemoth-mine.mp4",
      "p-two/bad/driving.mp4",
@@ -58,14 +58,14 @@ public class VideoLoader {
      "p-two/bad/deforestation-looped.mp4",
      "p-two/good/merrygoround-looped.mp4",
      
-     "p-two/bad/rivers-drying-2-shot.mp4",
+     "p-two/bad/rivers-drying-2.mp4",
      "p-two/good/gaming-crowds.mp4",
      
      "p-two/bad/mining-explosion.mp4",
      "p-two/good/beijing-night-traffic-looped.mp4",
      
      //"p-two/bad/behemoth-mine.mp4",
-     "p-two/good/beijing-3-shot-looped.mp4",
+     "p-two/good/beijing-3-shot-2.mp4",
      
      //"p-two/bad/driving.mp4",
      "p-two/good/hongkong-crowds2-looped.mp4",
@@ -94,7 +94,7 @@ public class VideoLoader {
    }; // TODO add quickshot paths from quickshot.pde
    
    private final String[] endPaths = {
-     "p-four/window-rain.mp4",
+     "p-four/window-rain-2.mp4",
     //  "p-four/water-walk.mp4",
     //  "p-four/pool.mp4",
     //  "p-four/olive-tree.mp4",
