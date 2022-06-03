@@ -1,4 +1,4 @@
-class VideoLoader {
+public class VideoLoader {
   private PApplet that;
   
   private final String[] p1Paths = {
@@ -34,6 +34,7 @@ class VideoLoader {
      "p-two/bad/behemoth-forge-2.mp4",
      "p-two/bad/behemoth-forge-3.mp4",
      "p-two/bad/deforestation-looped.mp4",
+     //"p-two/bad/deforestation-all.mp4",
      "p-two/bad/rivers-drying-2-shot.mp4",
      "p-two/bad/mining-explosion.mp4",
      "p-two/bad/behemoth-mine.mp4",
@@ -53,7 +54,7 @@ class VideoLoader {
      "p-two/bad/behemoth-forge-3.mp4",
      "p-two/good/feetwalking.mp4",
      
-     "p-two/bad/deforestation-all.mp4",
+     "p-two/bad/deforestation-looped.mp4",
      "p-two/good/merrygoround-looped.mp4",
      
      "p-two/bad/rivers-drying-2-shot.mp4",
@@ -62,10 +63,10 @@ class VideoLoader {
      "p-two/bad/mining-explosion.mp4",
      "p-two/good/beijing-night-traffic-looped.mp4",
      
-     "p-two/bad/behemoth-mine.mp4",
+     //"p-two/bad/behemoth-mine.mp4",
      "p-two/good/beijing-3-shot-looped.mp4",
      
-     "p-two/bad/driving.mp4",
+     //"p-two/bad/driving.mp4",
      "p-two/good/hongkong-crowds2-looped.mp4",
          
      "p-two/bad/wind-turbine.mp4",
@@ -86,6 +87,9 @@ class VideoLoader {
      "quickshot/queen-bullet.mp4",
      "quickshot/bullet-bill.mp4",
      "quickshot/excavator.mp4",
+     
+     "quickshot/ink-water-3-grayscale.mp4",
+     "quickshot/demolition-fall.mp4",
    }; // TODO add quickshot paths from quickshot.pde
    
    private final String[] endPaths = {

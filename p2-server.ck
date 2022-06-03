@@ -200,7 +200,7 @@ grainPos: float
 false => int CYCLE_POS_ENABLED;
 fun void grainPositionSender() {
     while (true) {
-        10::ms => now;
+        50::ms => now;
         -1 => float grainPos;
         if (CYCLE_POS_ENABLED)
             (.5 + (SCRUB_PERCENTAGE/2.0) * lfo.last()) => grainPos;
@@ -221,7 +221,7 @@ movieIdx: idx of global movie file
 false => int SYNC_AUDIO_FILES_ENABLED;
 fun void audioFileSender() {
     while (true) {
-        10::ms => now;
+        50::ms => now;
         if (!SYNC_AUDIO_FILES_ENABLED) continue;  // don't send msg
 
         for (0 => int i; i < NUM_RECEIVERS; i++) {
@@ -231,7 +231,9 @@ fun void audioFileSender() {
             xmits[i].send();
         } 
     }
-} spork ~ audioFileSender();
+} 
+// for now, all clients will be fixed on the same audio sample
+spork ~ audioFileSender();
 
 /* sends pulse timing */
 312 => float PULSE_BPM;
@@ -290,10 +292,10 @@ fun void kb() {
             if (msg.which == Util.KEY_SPACE) {
                 // toggleSynchronize();
             } else if (msg.which == Util.KEY_LEFT) {
-                changeAudioFile(AUDIO_IDX - 1);
+                // changeAudioFile(AUDIO_IDX - 1);
                 changeChordIdx(CHORD_IDX - 1);
             } else if (msg.which == Util.KEY_RIGHT) {
-                changeAudioFile(AUDIO_IDX + 1);
+                // changeAudioFile(AUDIO_IDX + 1);
                 changeChordIdx(CHORD_IDX + 1);
             } else if (msg.which == Util.KEY_A) {
                 changeMovieFile(MOVIE_IDX - 1);

@@ -97,14 +97,14 @@ fun void initialize() {
         );
         droner @=> switchableInstruments[0];
     } else if (is_mid(playerID)) {
+        SoundBoard soundboard;
+        soundboard.init(main_gain, kbNum, trackpadNum);
+        soundboard @=> switchableInstruments[0];
+    } else if (is_high(playerID)) {
         // nothing, equiv to silence
         Switchable switchable;
         switchable.init(main_gain); 
         switchable @=> switchableInstruments[0];
-    } else if (is_high(playerID)) {
-        SoundBoard soundboard;
-        soundboard.init(main_gain, kbNum, trackpadNum);
-        soundboard @=> switchableInstruments[0];
     }
 
     // P2 everyone gets combulator
@@ -125,25 +125,25 @@ fun void initialize() {
             shepard.init(main_gain, -11, 49, -SHEPARD_RATE);
         shepard @=> switchableInstruments[2];
     } else if (is_mid(playerID)) {
-        // noiser
-        Noiser noiser;
-        if (playerID == 3)
-            noiser.init(main_gain, Noiser.MODE_LOW);
-        else if (playerID == 4)
-            noiser.init(main_gain, Noiser.MODE_ALL);
-        else if (playerID == 5)
-            noiser.init(main_gain, Noiser.MODE_HIGH);
-        noiser @=> switchableInstruments[2];
-    } else if (is_high(playerID)) {
         // Shepard ASC
         Shepard shepard;
-        if (playerID == 6)
+        if (playerID == 3)
             shepard.init(main_gain, 3, 63, SHEPARD_RATE);
-        else if (playerID == 7)
+        else if (playerID == 4)
             shepard.init(main_gain, 7, 67, SHEPARD_RATE);
-        else if (playerID == 8)
+        else if (playerID == 5)
             shepard.init(main_gain, 11, 71, SHEPARD_RATE);
         shepard @=> switchableInstruments[2];
+    } else if (is_high(playerID)) {
+        // noiser
+        Noiser noiser;
+        if (playerID == 6)
+            noiser.init(main_gain, Noiser.MODE_LOW);
+        else if (playerID == 7)
+            noiser.init(main_gain, Noiser.MODE_ALL);
+        else if (playerID == 8)
+            noiser.init(main_gain, Noiser.MODE_HIGH);
+        noiser @=> switchableInstruments[2];
     }
 
 

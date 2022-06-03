@@ -10,6 +10,33 @@ public class Paths {
     6450 => int PROCESSING_PORT;
     [
         "localhost"
+
+        // // lows (back row 1-3)
+        // "lasagna.local",
+        // "jambalaya.local",
+        // "quinoa.local",
+
+        // // mids (back row 4-6)
+        // "chowder.local",
+        // "donut.local",
+        // "udon.local",
+
+        // // highs (front row 1-3)
+        // "meatloaf.local",
+        // "pho.local",
+        // "spam.local"
+        
+
+        // "jambalaya.local",
+        // "donut.local",
+        // "kimchi.local",
+        // "meatloaf.local",
+        // "nachos.local",
+        // "chowder.local",
+        // "gelato.local",
+        // "pho.local",
+        // "quinoa.local"
+
         // "gelato.local",
         // "udon.local",
         // "spam.local",
@@ -31,17 +58,17 @@ public class Paths {
 
 
     [
-        "./Samples/Field/thunder.wav",
-        "./Samples/Field/birds.wav",
-        "./Samples/Field/bumblebees.wav",
-        "./Samples/Field/wind.wav",
-        "./Samples/Field/frozen-pond.wav"
+        "./Samples/Field/jackhammer.wav"
+        // "./Samples/Field/birds.wav",
+        // "./Samples/Field/bumblebees.wav",
+        // "./Samples/Field/wind.wav",
+        // "./Samples/Field/frozen-pond.wav"
     ] @=> string AUDIO_FILES[];
 
     [ // TODO: update to actual mp4s
         // good
-        // "good/clouds.mp4",
         "good/beijing-aerial-still.mp4",
+        // "good/clouds.mp4",
         "good/coaster.mp4",
         "good/feetwalking.mp4",
         "good/merrygoround.mp4",

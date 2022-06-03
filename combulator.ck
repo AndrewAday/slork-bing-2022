@@ -103,7 +103,13 @@ public class Combulator extends Switchable {
         
         // initialize field granulator
             // connect to comb filter
-        create_granulator(paths.AUDIO_FILES[audioID], this.ksChord) @=> field_granulator;
+        // create_granulator(paths.AUDIO_FILES[audioID], this.ksChord) @=> field_granulator;
+        if (playerID % 2 == 0) {
+            // create_granulator("./Samples/Field/jackhammer.wav", this.ksChord) @=> field_granulator;
+            create_granulator("./Samples/Field/sawing.wav", this.ksChord) @=> field_granulator;
+        } else {
+            create_granulator("./Samples/Field/jackhammer.wav", this.ksChord) @=> field_granulator;
+        }
             // also connect through dry 
         field_granulator.connect(field_gain);
 
@@ -125,7 +131,7 @@ public class Combulator extends Switchable {
         return Util.remap(-1., 1., .4, 2.5, y);
     }
 
-    .5 => float Z_MAX;
+    .45 => float Z_MAX;
     fun void gt_update(GameTrack @ gt) {  // To be called in while() loop 
         // <<< "combulator gt_update" >>>;
         fieldGranulatorController(gt);  // control granulation params
@@ -143,6 +149,7 @@ public class Combulator extends Switchable {
 
         // calculate as percentage of maximum
         Util.invLerp01(gt.Z_DEADZONE, Z_MAX, z) => float z_perc;
+        // Util.print("z_perc: " + z_perc);
 
         // set granulation position (TODO: add pos randomization?)
         if (!GETTING_NETWORKED_GRAIN_POS)
@@ -159,10 +166,10 @@ public class Combulator extends Switchable {
 
 
     // comb controller config
-    .5 => float COMB_MAX_Z; // z position at max feedback, max gain
-    .98 => float MAX_FEEDBACK;
+    .45 => float COMB_MAX_Z; // z position at max feedback, max gain
+    .985 => float MAX_FEEDBACK;
     .90 => float MIN_FEEDBACK;
-    170. => float MAX_WIDTH;  // hand width at max adsr gain
+    140. => float MAX_WIDTH;  // hand width at max adsr gain
     fun void combFilterController(GameTrack @ gt) {
         gt.curAxis[gt.RZ] => float z;
 
@@ -190,6 +197,8 @@ public class Combulator extends Switchable {
             // width_percentage => comb_adsr.sustainLevel;
             // width_percentage * 5::second => comb_adsr.releaseTime;
         width_percentage => comb_adsr.gain;
+
+        Util.print("z_perc: " + z_perc + " | width_perc: " + width_percentage);
     }
 
     /*=========OSC Receivers=========*/

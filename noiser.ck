@@ -63,6 +63,7 @@ public class Noiser extends Switchable {
         gt.GetAvgZ() => float avg_z; // between [0, 1]
 
         if (avg_z < gt.Z_DEADZONE) {
+            0 => noise.gain;
             return;
         }
 

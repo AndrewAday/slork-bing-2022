@@ -32,7 +32,7 @@ int fadeDuration = 3000;
 
 
 public enum TILEMODE {FULLSCREEN, TILED, CROPPED};
-TILEMODE tileMode = TILEMODE.FULLSCREEN;
+TILEMODE tileMode = TILEMODE.CROPPED;
 
 
 public enum MOVIEPHASE { P1, P2, QUICKSHOT, END, NONE };
@@ -57,7 +57,7 @@ void settings() {
   // window size
   size(1400, 800);
   //size(1400, 800, P2D); // p2d and p3d renderers brick
-  //fullScreen();
+  fullScreen(1);
 }
 
 // set up
