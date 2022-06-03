@@ -182,7 +182,7 @@ public class Combulator extends Switchable {
         Util.invLerp01(gt.Z_DEADZONE, COMB_MAX_Z, z) => float z_perc;
 
         // set comb gain
-        z_perc => comb_gain.gain;
+        .5 * z_perc => comb_gain.gain;
 
         // set comb filter feedback
             // TODO: map through logistic function, because feedback >.9 is much more sensitive
