@@ -95,9 +95,9 @@ public class VideoLoader {
    
    private final String[] endPaths = {
      "p-four/window-rain.mp4",
-     "p-four/water-walk.mp4",
-     "p-four/pool.mp4",
-     "p-four/olive-tree.mp4",
+    //  "p-four/water-walk.mp4",
+    //  "p-four/pool.mp4",
+    //  "p-four/olive-tree.mp4",
      "p-four/train-side-view.mp4",
      "p-four/trees-and-clouds.mp4",
      "p-four/waves.mp4",
