@@ -91,10 +91,10 @@ class VideoLoader {
    private final String[] endPaths = {
      "p-four/window-rain.mp4",
      "p-four/water-walk.mp4",
-     "p-four/pool.mp4",
-     "p-four/olive-tree.mp4",
-     "p-four/train-side-view.mp4",
-     "p-four/trees-and-clouds.mp4",
+    //  "p-four/pool.mp4",
+    //  "p-four/olive-tree.mp4",
+    //  "p-four/train-side-view.mp4",
+    //  "p-four/trees-and-clouds.mp4",
      "p-four/waves.mp4",
      
    };
@@ -109,7 +109,7 @@ class VideoLoader {
    private ArrayList<Movie> endMovies = new ArrayList<Movie>();
    private ArrayList<ArrayList<Movie>> movies = new ArrayList<ArrayList<Movie>>();
    
-   public int[] movieIdxs = {0, 0, 0, 0};
+   public int[] movieIdxs = {1, 0, 0, 0};
    
    private Movie m;
    private float movieSpeed = 1;
@@ -232,6 +232,8 @@ class VideoLoader {
     var movieList = movies.get(MOVIEPHASE.P1.ordinal());
     switcher[1].stop();
     switcher[1] = movieList.get(movieIdx % movieList.size());
+    switcher[1].loop();
+    movieIdxs[MOVIEPHASE.P1.ordinal()] += 1;
    }
 
 
@@ -254,6 +256,8 @@ class VideoLoader {
     var movieList = movies.get(MOVIEPHASE.P1.ordinal());
     switcher[0].stop();
     switcher[0] = movieList.get(movieIdx % movieList.size());
+    switcher[0].loop();
+    movieIdxs[MOVIEPHASE.P1.ordinal()] += 1;
    }
    
    public void exitP1() {
