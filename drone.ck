@@ -10,7 +10,7 @@ public class Droner extends Switchable {
   "P1 Droner" => this.NAME;
   /* ============= signal flow =========== */ 
   Gain main_gain;
-  .5 => main_gain.gain;
+  .18 => main_gain.gain;
 
   NRev rev => Echo e1 => Echo e2 => main_gain => this.switch_gain;  // outlet
   Gain ll_voice_gain => rev;

@@ -27,7 +27,7 @@ public class Combulator extends Switchable {
     // main gains
     Gain field_gain; Gain comb_gain; Gain main_gain;
     0 => field_gain.gain => comb_gain.gain;
-    1 => main_gain.gain;
+    .70 => main_gain.gain;
 
     // envelope follower
     comb_gain => EnvFollower envFollower => blackhole;
@@ -63,7 +63,7 @@ public class Combulator extends Switchable {
     // TODO: normalize gains on samples
     // TODO: crossfade between held drone and pulsed kschord
         // or sustain kschord and pulse instrument? discuss w/ tesss.
-    4 => instrument_gran0.lisa.gain => instrument_gran1.lisa.gain;
+    .75 => instrument_gran0.lisa.gain => instrument_gran1.lisa.gain;
 
     Granulator @ field_granulator; // initialized in this.init(...)
 
@@ -182,7 +182,7 @@ public class Combulator extends Switchable {
         Util.invLerp01(gt.Z_DEADZONE, COMB_MAX_Z, z) => float z_perc;
 
         // set comb gain
-        z_perc => comb_gain.gain;
+        .60 * z_perc => comb_gain.gain;
 
         // set comb filter feedback
             // TODO: map through logistic function, because feedback >.9 is much more sensitive
