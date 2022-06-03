@@ -198,7 +198,7 @@ public class Combulator extends Switchable {
             // width_percentage * 5::second => comb_adsr.releaseTime;
         width_percentage => comb_adsr.gain;
 
-        Util.print("z_perc: " + z_perc + " | width_perc: " + width_percentage);
+        // Util.print("z_perc: " + z_perc + " | width_perc: " + width_percentage);
     }
 
     /*=========OSC Receivers=========*/

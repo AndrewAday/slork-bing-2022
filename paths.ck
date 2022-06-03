@@ -68,7 +68,7 @@ public class Paths {
     [ // TODO: update to actual mp4s
         // good
         "good/beijing-aerial-still.mp4",
-        // "good/clouds.mp4",
+        "good/clouds.mp4",
         "good/coaster.mp4",
         "good/feetwalking.mp4",
         "good/merrygoround.mp4",
