@@ -6,7 +6,7 @@ public class Paths {
     0 => int KB_NUM;
 
     /* ========network config ============== */
-    "azaday.local" => string PROCESSING_HOSTNAME;
+    "Trijeet.local" => string PROCESSING_HOSTNAME;
     // "localhost" => string PROCESSING_HOSTNAME;
     6450 => int PROCESSING_PORT;
     [
