@@ -31,9 +31,9 @@ public class VideoLoader {
      "p-two/good/hongkong-building.mp4",
      "p-two/good/fireworks-nologo.mp4",
      // bad
-     "p-two/bad/behemoth-forge-1-2.mp4",
      "p-two/bad/behemoth-forge-2.mp4",
      "p-two/bad/behemoth-forge-3.mp4",
+     "p-two/bad/satellite.mp4",
      "p-two/bad/deforestation-looped.mp4",
      //"p-two/bad/deforestation-all.mp4",
      "p-two/bad/rivers-drying-2.mp4",

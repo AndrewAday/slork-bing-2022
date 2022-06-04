@@ -16,7 +16,25 @@ import processing.video.*;
 
 // OSC object
 OscP5 oscP5;
-NetAddress remoteLocation;
+NetAddress[] remoteLocations;
+
+String[] hostnames = {
+  // lows (back row 1-3)
+  "lasagna.local",
+  "jambalaya.local",
+  "quinoa.local",
+
+  // mids (back row 4-6)
+  "chowder.local",
+  "donut.local",
+  "udon.local",
+
+  // highs (front row 1-3)
+  "meatloaf.local",
+  "pho.local",
+  "spam.local"
+  //"224.0.0.1"
+};
 
 
 // display tiles
@@ -57,7 +75,7 @@ void settings() {
   // window size
   size(1400, 800);
   //size(1400, 800, P2D); // p2d and p3d renderers brick
-  fullScreen(1);
+  fullScreen(2);
 }
 
 // set up
@@ -88,8 +106,13 @@ void setup()
    */
   //remoteLocation = new NetAddress("azaday.local", 6450);
   // TODO: multicast this
-  remoteLocation = new NetAddress("224.0.0.1", 6451); // TODO: move to networt config constants
-  qs = new Quickshot(remoteLocation, oscP5, vl);
+  //remoteLocation = new NetAddress("224.0.0.1", 6451); // TODO: move to networt config constants
+  remoteLocations = new NetAddress[hostnames.length];
+  for (int i = 0; i < hostnames.length; i++)
+    remoteLocations[i] = new NetAddress(hostnames[i], 6451); // TODO: move to networt config constants
+  qs = new Quickshot(remoteLocations, oscP5, vl);
+  for (int i = 0; i < remoteLocations.length; i++)
+    println(i + ": " + remoteLocations[i]);
   screenTileW =  width / nTilesW;
   screenTileH = height / nTilesL;
 }
@@ -175,12 +198,13 @@ void draw()
         
         // set tint
         Player currPlayer = players.get(i);
-        var alpha = max(100, 255*currPlayer.gain);
-        println("alpha: " + alpha);
+        //var alpha = max(100, 255*currPlayer.gain);
+        var alpha = max(0, 255*currPlayer.gain);
+        //println("alpha: " + alpha);
         tint(255, alpha);  // this method doesn't drop frames
         
-        int xPos = i / nTilesW;
-        int yPos = i % nTilesL;
+        int yPos = i / nTilesW;
+        int xPos = i % nTilesL;
         
         if (tileMode == TILEMODE.TILED) {
           // tile entire img
@@ -202,7 +226,7 @@ void draw()
           - maybe have this as a keycode option press 'R'
       */
       float delay = qs.initialDelay * qs.delayRate;
-      if (delay < 0.1) {
+      if (delay < 0.2) {
         background(255);
         return;
       }
@@ -335,11 +359,11 @@ void keyPressed() {
     phase = MOVIEPHASE.BLACK;
   }
   else if (keyCode == DOWN) {
-    println("faster shot: " + qs.initialDelay * qs.delayRate);
     qs.delayRate -= 0.08;
+    println("faster shot: " + qs.initialDelay * qs.delayRate);
   }
   else if (keyCode == UP) {
-    println("slower shot: " + qs.initialDelay * qs.delayRate);
     qs.delayRate += 0.08;
+    println("slower shot: " + qs.initialDelay * qs.delayRate);
   }
 }
