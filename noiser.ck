@@ -22,6 +22,8 @@ public class Noiser extends Switchable {
 
     Noise noise; 0 => noise.gain;
     LPF lowpass; HPF highpass;
+    Gain main_gain;
+    .75 => main_gain.gain;
 
     2 => lowpass.Q => highpass.Q;  // TODO: test different resonances
     
@@ -44,16 +46,16 @@ public class Noiser extends Switchable {
 
         // TODO: higher Q?
         if (mode == MODE_HIGH) {
-            noise => highpass => lowpass => this.switch_gain;
+            noise => highpass => lowpass => main_gain => this.switch_gain;
             2560 => lowpass.freq;
             2560 => highpass.freq;
         } else if (mode == MODE_LOW) {
-            noise => lowpass => highpass => this.switch_gain;
+            noise => lowpass => highpass => main_gain => this.switch_gain;
             160 => lowpass.freq;
             160 => highpass.freq;
         } else if (mode == MODE_ALL) {
             // no filtering, straight out
-            this.noise => this.switch_gain;
+            this.noise => main_gain => this.switch_gain;
         }
     }
 

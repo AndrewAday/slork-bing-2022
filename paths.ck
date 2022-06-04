@@ -7,24 +7,26 @@ public class Paths {
 
     /* ========network config ============== */
     "azaday.local" => string PROCESSING_HOSTNAME;
+    // "localhost" => string PROCESSING_HOSTNAME;
     6450 => int PROCESSING_PORT;
     [
-        "localhost"
+        // "localhost"
+        // "Tess.local"
 
-        // // lows (back row 1-3)
-        // "lasagna.local",
-        // "jambalaya.local",
-        // "quinoa.local",
+        // lows (back row 1-3)
+        "lasagna.local",
+        "jambalaya.local",
+        "quinoa.local",
 
-        // // mids (back row 4-6)
-        // "chowder.local",
-        // "donut.local",
-        // "udon.local",
+        // mids (back row 4-6)
+        "chowder.local",
+        "donut.local",
+        "udon.local",
 
-        // // highs (front row 1-3)
-        // "meatloaf.local",
-        // "pho.local",
-        // "spam.local"
+        // highs (front row 1-3)
+        "meatloaf.local",
+        "pho.local",
+        "spam.local"
         
 
         // "jambalaya.local",
